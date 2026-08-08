@@ -32,8 +32,6 @@ uses
   {$ENDIF}
 
 const
-  SimpleCblePascalVersion = '1.0.0';
-
   {$IFDEF WINDOWS}
     SimpleBleExtLibrary = 'simplecble.dll';
     SimpleBleCoreLibrary = 'simpleble.dll';

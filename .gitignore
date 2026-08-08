@@ -2,6 +2,14 @@
 **/lib
 **/release_packages
 *.lps
+*.o
+*.ppu
+*.fpm
 *.zip
+/fpmake
+/manifest.xml
+/packagefiles.xml
+/simpleblepascal.pas
+/units/
 build/
 shared/

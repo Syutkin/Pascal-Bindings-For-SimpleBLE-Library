@@ -109,6 +109,21 @@ cc -std=c11 -Wall -Wextra -Werror -Ishared/include \
 tests/bin/simplecbleabioracle
 ```
 
+## Package Builds
+
+The bindings can be built as an FPC source package without loading the native
+libraries:
+
+```sh
+fppkg build
+```
+
+The optional Lazarus package provides the same `SimpleBle` unit:
+
+```sh
+lazbuild --ws=qt6 simpleblepascal.lpk
+```
+
 ## Building the SimpleBLE Shared Libraries
 This repository does not vendor the SimpleBLE source tree or native binaries.
 Obtain the native SimpleBLE and SimpleCBLE 1.0.0 artifacts from the
