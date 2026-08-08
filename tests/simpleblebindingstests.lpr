@@ -7,6 +7,7 @@ uses
   cthreads,
   {$ENDIF}
   consoletestrunner,
+  SimpleCbleAbiTests,
   SimpleBleNativeLoaderTests;
 
 var

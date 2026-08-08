@@ -49,8 +49,16 @@ On Linux (tested on Ubuntu 20.04LTS) it's necessary to copy the shared libraries
 ### Dynamic Library Loading
 Dynamic loading is enabled by default on all platforms. Call
 `SimpleBleLoadLibrary` with the directory containing both native libraries and
-call `SimpleBleUnloadLibrary` during shutdown. Define `SIMPLEBLE_STATIC` when
-compiling the unit only when static linking is configured explicitly.
+call `SimpleBleUnloadLibrary` during shutdown. When loading fails,
+`SimpleBleGetLastLoadError` returns a diagnostic. Define `SIMPLEBLE_STATIC`
+when compiling the unit only when static linking is configured explicitly.
+
+Strings returned by adapter/peripheral identifier and address functions, and
+buffers returned by read functions, belong to SimpleCBLE and must be released
+exactly once with `SimpleBleFree`. The string returned by
+`SimpleBleGetVersion` is `const` and must not be freed. Adapter and peripheral
+handles must be released with their matching release functions after callbacks
+and subscriptions have been detached.
 
 ## Tests
 
@@ -61,6 +69,15 @@ The native loader tests do not require a BLE adapter. Point
 lazbuild --ws=qt6 tests/simpleblebindingstests.lpi
 SIMPLECBLE_LIBRARY_DIR=/path/to/libraries \
   tests/bin/simpleblebindingstests --all --format=plain
+```
+
+The checked-in C oracle prints the platform ABI used by the Pascal layout
+tests:
+
+```sh
+cc -std=c11 -Wall -Wextra -Werror -Ishared/include \
+  tests/simplecbleabioracle.c -o tests/bin/simplecbleabioracle
+tests/bin/simplecbleabioracle
 ```
 
 ## Building the SimpleBLE Shared Libraries

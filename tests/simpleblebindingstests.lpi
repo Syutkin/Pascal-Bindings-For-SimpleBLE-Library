@@ -14,7 +14,7 @@
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="simpleblebindingstests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -25,10 +25,15 @@
         <UnitName Value="SimpleBleNativeLoaderTests"/>
       </Unit1>
       <Unit2>
+        <Filename Value="simplecbleabitests.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SimpleCbleAbiTests"/>
+      </Unit2>
+      <Unit3>
         <Filename Value="..\SimpleBleUnit\simpleble.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SimpleBle"/>
-      </Unit2>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

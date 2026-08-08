@@ -53,12 +53,12 @@ var
   CharacteristicList: array [0..SERVICES_LIST_SIZE-1] of TServiceCharacteristic;
   PeripheralList: array [0..PERIPHERAL_LIST_SIZE-1] of TSimpleBlePeripheral;
   PeripheralListLen: NativeUInt = 0;
-  Adapter: TSimpleBleAdapter = 0;
+  Adapter: TSimpleBleAdapter = nil;
 
 
 { Callback functions for SimpleBLE }
 
-procedure AdapterOnScanStart(Adapter: TSimpleBleAdapter; Userdata: PPointer);
+procedure AdapterOnScanStart(Adapter: TSimpleBleAdapter; Userdata: Pointer); cdecl;
 var
   Identifier: PChar;
 begin
@@ -69,7 +69,7 @@ begin
   SimpleBleFree(Identifier);
 end;
 
-procedure AdapterOnScanStop(Adapter: TSimpleBleAdapter; Userdata: PPointer);
+procedure AdapterOnScanStop(Adapter: TSimpleBleAdapter; Userdata: Pointer); cdecl;
 var
   Identifier: PChar;
 begin
@@ -80,7 +80,7 @@ begin
   SimpleBleFree(Identifier);
 end;
 
-procedure AdapterOnScanFound(Adapter: TSimpleBleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: PPointer);
+procedure AdapterOnScanFound(Adapter: TSimpleBleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: Pointer); cdecl;
 var
   AdapterIdentifier: PChar;
   PeripheralIdentifier: PChar;
@@ -107,7 +107,9 @@ begin
   SimpleBleFree(PeripheralAddress);
 end;
 
-procedure PeripheralOnNotify(Service: TSimpleBleUuid; Characteristic: TSimpleBleUuid; Data: PByte; DataLength: NativeUInt; Userdata: PPointer);
+procedure PeripheralOnNotify(Peripheral: TSimpleBlePeripheral;
+  Service: TSimpleBleUuid; Characteristic: TSimpleBleUuid; Data: PByte;
+  DataLength: NativeUInt; Userdata: Pointer); cdecl;
 var
   i: Integer;
 begin
@@ -132,13 +134,11 @@ var
   Service: TSimpleBleService;
 begin
 
-  {$IFDEF DYNAMIC_LOADING}
   if not SimpleBleLoadLibrary() then begin
     writeln('Failed to load library');
     readln;
     exit;
   end;
-  {$ENDIF}
 
   // quick check parameters
   ErrorMsg:=CheckOptions('h', 'help');
@@ -165,7 +165,7 @@ begin
 
   // get a handle for the BLE Adapter
   Adapter := SimpleBleAdapterGetHandle(0);
-  if Adapter = 0 then
+  if Adapter = nil then
   begin
     WriteLn('Could not get handle for BLE adapter.');
     Terminate;
@@ -267,9 +267,7 @@ begin
   // release the BLE handle
   SimpleBleAdapterReleaseHandle(Adapter);
 
-  {$IFDEF DYNAMIC_LOADING}
   SimpleBleUnloadLibrary();
-  {$ENDIF}
 
   // stop program loop
   Terminate;
@@ -309,4 +307,3 @@ begin
   Application.Run;
   Application.Free;
 end.
-

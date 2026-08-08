@@ -41,7 +41,7 @@ type
 
 { Callback functions for SimpleBLE }
 
-procedure AdapterOnScanStart(Adapter: TSimplebleAdapter; Userdata: PPointer);
+procedure AdapterOnScanStart(Adapter: TSimplebleAdapter; Userdata: Pointer); cdecl;
 var
   Identifier: PChar;
 begin
@@ -52,7 +52,7 @@ begin
   SimpleBleFree(Identifier);
 end;
 
-procedure AdapterOnScanStop(Adapter: TSimplebleAdapter; Userdata: PPointer);
+procedure AdapterOnScanStop(Adapter: TSimplebleAdapter; Userdata: Pointer); cdecl;
 var
   Identifier: PChar;
 begin
@@ -63,7 +63,7 @@ begin
   SimpleBleFree(Identifier);
 end;
 
-procedure AdapterOnScanFound(Adapter: TSimplebleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: PPointer);
+procedure AdapterOnScanFound(Adapter: TSimplebleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: Pointer); cdecl;
 var
   AdapterIdentifier: PChar;
   PeripheralIdentifier: PChar;
@@ -99,7 +99,7 @@ begin
   SimpleBleFree(PeripheralAddress);
 end;
 
-procedure AdapterOnScanUpdated(Adapter: TSimplebleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: PPointer);
+procedure AdapterOnScanUpdated(Adapter: TSimplebleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: Pointer); cdecl;
 var
   AdapterIdentifier: PChar;
   PeripheralIdentifier: PChar;
@@ -145,13 +145,11 @@ var
 
 begin
 
-  {$IFDEF DYNAMIC_LOADING}
   if not SimpleBleLoadLibrary() then begin
     writeln('Failed to load library');
     readln;
     exit;
   end;
-  {$ENDIF}
 
   // quick check parameters
   ErrorMsg:=CheckOptions('h', 'help');
@@ -178,7 +176,7 @@ begin
 
   // get a handle for the BLE Adapter
   Adapter := SimpleBleAdapterGetHandle(0);
-  if Adapter = 0 then
+  if Adapter = nil then
   begin
     WriteLn('Could not get handle for BLE adapter.');
     Terminate;
@@ -201,9 +199,7 @@ begin
   // release the BLE handle
   SimpleBleAdapterReleaseHandle(Adapter);
 
-  {$IFDEF DYNAMIC_LOADING}
   SimpleBleUnloadLibrary();
-  {$ENDIF}
 
   // stop program loop
   Terminate;
@@ -235,4 +231,3 @@ begin
   Application.Run;
   Application.Free;
 end.
-

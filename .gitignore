@@ -4,3 +4,4 @@
 *.lps
 *.zip
 build/
+shared/
