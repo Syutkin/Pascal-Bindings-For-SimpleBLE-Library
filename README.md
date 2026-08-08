@@ -5,27 +5,37 @@ Current Pascal bindings release: **v1.0.0**, targeting the SimpleBLE/SimpleCBLE
 1.0.0 ABI.
 
 ## SimpleBLE
-SimpleBLE is a fully-fledged cross-platform library and bindings for Bluetooth Low Energy (BLE).
+SimpleBLE is a cross-platform native Bluetooth Low Energy library. SimpleCBLE
+exposes its C ABI; this project provides a Pascal unit for that ABI for use
+with [Lazarus](https://www.lazarus-ide.org/) and
+[Free Pascal](https://www.freepascal.org/).
 
-> "The SimpleBLE project aims to provide fully cross-platform BLE libraries and bindings for Python and C++, designed for simplicity and ease of use with a licencing scheme chosen to be friendly towards commercial use. All specific operating system quirks are handled internally to provide a consistent behavior across all platforms. The libraries also provide first-class support for vendorization of all third-party dependencies, allowing for easy integration into existing projects."
-
-The project lives on github (https://github.com/OpenBluetoothToolbox/SimpleBLE) and documentation is available through ReadTheDocs (https://simpleble.readthedocs.io/en/latest/).
-
-It can be easily compiled into a shared library (.dll, .so, .dylib) and so far comes with C/C++ and Python bindings for the library functions. This project here adds Pascal bindings based on the C API in form of a unit to leverage the library functionality in [Lazarus](https://www.lazarus-ide.org/) / [FreePascal](https://www.freepascal.org/) projects.
+The native project is maintained in the
+[`simpleble/simpleble`](https://github.com/simpleble/simpleble) repository.
+Its documentation is available on
+[Read the Docs](https://simpleble.readthedocs.io/en/latest/).
 
 ## Usage
-The SimpleBLE bindings come as a single-file Pascal unit and this is in the folder "Pascal\_Unit". To use it in a Lazarus/FreePascal project just copy it to the folder of your Lazarus project and add it to your project files list.
+The bindings are provided by the single unit
+`SimpleBleUnit/simpleble.pas`. Add this unit and its directory to the source
+paths of a Lazarus or Free Pascal project.
 
-To actually use the SimpleBLE functions in the compiled application, the corresponding shared libraries need to be copied into the same path as the compiled application. (Alternatively other location could be used, provided it's on the PATH or it's some system wide location like Windows\System32 - however, at least the latter is usually not recommended.)
+Applications must call `SimpleBleLoadLibrary` before using the API. Pass an
+explicit directory to load libraries from that location, including when the
+libraries are stored next to the executable. Calling it without a directory
+uses the platform's standard dynamic-library search path. Call
+`SimpleBleUnloadLibrary` only after subscriptions, callbacks and native handles
+have been released.
 
-Here is a list of required files for SimpleBLE 1.0.0:
-* **simpleble.pas**: The Pascal unit with SimpleBLE bindings.
-* **simplecble**: The shared C API library (`simplecble.dll`, `libsimplecble.so`, or `libsimplecble.dylib`).
-* **simpleble**: The native implementation loaded by SimpleCBLE (`simpleble.dll`, `libsimpleble.so`, or `libsimpleble.dylib`).
+Pascal bindings release v1.0.0 targets the SimpleCBLE 1.0.0 ABI and requires:
 
-On Windows systems shared libraries use the extension ".dll", but on other systems this is different (like .so on Linux/Unix).
+* `SimpleBleUnit/simpleble.pas`: the Pascal declarations and dynamic loader;
+* `simplecble.dll`, `libsimplecble.so`, or `libsimplecble.dylib`: the C ABI;
+* `simpleble.dll`, `libsimpleble.so`, or `libsimpleble.dylib`: the native
+  implementation used by SimpleCBLE.
 
-Currently the Pascal bindings have been implemented and tested with Lazarus version 2.3.0 and Free Pascal version 3.3.1 (installed 'trunk' with fpdupdeluxe) on Windows 10 / 64 bit and Ubuntu 20.04LTS / 64 bit.
+Release v1.0.0 has been built and tested with Lazarus 4.8 and Free Pascal
+3.2.2 on Linux x86_64. The current fork has not yet been verified on Windows.
 
 ## Examples
 The original SimpleBLE project comes with three C examples, which have been ported to Lazarus:
@@ -45,6 +55,14 @@ The original SimpleBLE project comes with three C examples, which have been port
 There are some more examples, but those are C++ and weren't (yet...) ported to Pascal.
 
 ### Building the Examples
+Build the console examples from the repository root:
+
+```sh
+lazbuild --ws=qt6 SimpleBleScanExample/SimpleBleScanExample.lpi
+lazbuild --ws=qt6 SimpleBleConnectExample/SimpleBleConnectExample.lpi
+lazbuild --ws=qt6 SimpleBleNotifyExample/SimpleBleNotifyExample.lpi
+```
+
 The examples search for the native libraries in this order:
 
 1. The directory specified by `SIMPLECBLE_LIBRARY_DIR`.
@@ -66,7 +84,10 @@ buffers returned by read functions, belong to SimpleCBLE and must be released
 exactly once with `SimpleBleFree`. The string returned by
 `SimpleBleGetVersion` is `const` and must not be freed. Adapter and peripheral
 handles must be released with their matching release functions after callbacks
-and subscriptions have been detached.
+and subscriptions have been detached. Data passed to notification and
+indication callbacks is borrowed from SimpleCBLE and is valid only for the
+duration of the callback. Copy it into Pascal-owned memory before returning if
+it is needed asynchronously.
 
 ## Tests
 
@@ -89,19 +110,19 @@ tests/bin/simplecbleabioracle
 ```
 
 ## Building the SimpleBLE Shared Libraries
-The SimpleBLE project comes with batch files / shell scripts for Windows / Linux which automagically compile the shared libraries. These are located in the "utils" folder of the SimpleBLE repo. However, for me it did not work under Linux/Ubuntu properly.
+This repository does not vendor the SimpleBLE source tree or native binaries.
+Obtain the native SimpleBLE and SimpleCBLE 1.0.0 artifacts from the
+[official v1.0.0 release](https://github.com/simpleble/simpleble/releases/tag/v1.0.0),
+or build the pinned `v1.0.0` tag using the upstream instructions. Do not build
+an unpinned `main` branch for this bindings release.
 
-### Windows
-When running the batch file, the compiled libraries will go into "build\_simpleble/bin/Release". A suitable compiler needs to be installed, I used Visual Studio Community edition 2022 (64 bit), version 17.3.6 on Windows 10 / 64 bit.
+Keep `simpleble` and `simplecble` from the same release and architecture.
+Before redistributing native binaries, retain their native license notices and
+confirm that the SimpleBLE licensing terms permit the intended distribution.
 
-### Linux
-On Linux please follow the instructions given at https://github.com/OpenBluetoothToolbox/SimpleBLE/blob/main/docs/simpleble/usage.rst.
+## Contributing
 
-## Releases
-Pre-built SimpleBLE shared libraries are available on the [releases tab](https://github.com/eriklins/Pascal-Bindings-For-SimpleBLE-Library/releases). Currently there are versions for Windows 64 bit / 32 bit as well as Linux 64 bit available.
-
-## Contributing/Feedback
-I'm far from being an expert in Pascal programming, but liked and used Lazarus/FreePascal for some projects. So, feedback / improvements / pull-requests / etc. are welcome!
+Issues and pull requests are welcome.
 
 ## License
 Copyright (C) 2022 Erik Lins
