@@ -5,8 +5,13 @@ unit SimpleBle;
 
 { Lazarus / Free Pascal bindings for the cross-platform SimpleBLE library.
 
-  Pascal bindings are Copyright (c) 2022-2023 Erik Lins and released under the MIT License.
+  Original Pascal bindings are Copyright (c) 2022-2023 Erik Lins.
     https://github.com/eriklins/Pascal-Bindings-For-SimpleBLE-Library
+
+  Modifications are Copyright (c) 2026 Andrey Syutkin.
+    https://github.com/Syutkin/Pascal-Bindings-For-SimpleBLE-Library
+
+  The Pascal bindings and modifications are released under the MIT License.
 
   The native SimpleBLE library has its own BUSL-1.1/commercial licensing terms.
     https://github.com/simpleble/simpleble
@@ -27,6 +32,8 @@ uses
   {$ENDIF}
 
 const
+  SimpleCblePascalVersion = '1.0.0';
+
   {$IFDEF WINDOWS}
     SimpleBleExtLibrary = 'simplecble.dll';
     SimpleBleCoreLibrary = 'simpleble.dll';

@@ -4,14 +4,19 @@ program SimpleBleNotifyExample;
 
 { Lazarus / Free Pascal BLE notify example for SimpleBLE library.
 
-  This project is Copyright (c) 2022 Erik Lins and released under the MIT License.
+  The original example is Copyright (c) 2022 Erik Lins.
     https://github.com/eriklins/Pascal-Bindings-For-SimpleBLE-Library
+
+  Modifications are Copyright (c) 2026 Andrey Syutkin.
+    https://github.com/Syutkin/Pascal-Bindings-For-SimpleBLE-Library
+
+  The example and modifications are released under the MIT License.
 
   This example is a port of the C notify example in SimpleBLE to Lazarus/FreePascal.
     https://github.com/OpenBluetoothToolbox/SimpleBLE/tree/main/examples/simpleble/c/notify
 
-  The SimpleBLE library is Copyright (c) 2021-2022 Kevin Dewald and released under the MIT License.
-    https://github.com/OpenBluetoothToolbox/SimpleBLE
+  The native SimpleBLE library has its own BUSL-1.1/commercial licensing terms.
+    https://github.com/simpleble/simpleble
 }
 
 {$UNDEF DYNAMIC_LOADING}
@@ -44,6 +49,25 @@ type
     Characteristic: TSimpleBleUuid;
   end;
 
+function LoadNativeLibraries: Boolean;
+var
+  LibraryDirectory: string;
+begin
+  LibraryDirectory := GetEnvironmentVariable('SIMPLECBLE_LIBRARY_DIR');
+  if LibraryDirectory <> '' then
+  begin
+    Result := SimpleBleLoadLibrary(LibraryDirectory);
+    if Result then
+      Exit;
+  end;
+
+  Result := SimpleBleLoadLibrary(ExtractFilePath(ParamStr(0)));
+  if Result then
+    Exit;
+
+  Result := SimpleBleLoadLibrary();
+end;
+
 
 const
   PERIPHERAL_LIST_SIZE = 10;
@@ -63,10 +87,13 @@ var
   Identifier: PChar;
 begin
   Identifier := SimpleBleAdapterIdentifier(Adapter);
-  if Identifier = '' then
-    Exit;
-  WriteLn('Adapter ' + Identifier + ' started scanning.');
-  SimpleBleFree(Identifier);
+  try
+    if Identifier = nil then
+      Exit;
+    WriteLn('Adapter ' + Identifier + ' started scanning.');
+  finally
+    SimpleBleFree(Identifier);
+  end;
 end;
 
 procedure AdapterOnScanStop(Adapter: TSimpleBleAdapter; Userdata: Pointer); cdecl;
@@ -74,10 +101,13 @@ var
   Identifier: PChar;
 begin
   Identifier := SimpleBleAdapterIdentifier(Adapter);
-  if Identifier = '' then
-    Exit;
-  WriteLn('Adapter ' + Identifier + ' started scanning.');
-  SimpleBleFree(Identifier);
+  try
+    if Identifier = nil then
+      Exit;
+    WriteLn('Adapter ' + Identifier + ' stopped scanning.');
+  finally
+    SimpleBleFree(Identifier);
+  end;
 end;
 
 procedure AdapterOnScanFound(Adapter: TSimpleBleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: Pointer); cdecl;
@@ -85,26 +115,34 @@ var
   AdapterIdentifier: PChar;
   PeripheralIdentifier: PChar;
   PeripheralAddress: PChar;
+  Stored: Boolean;
 begin
-  AdapterIdentifier := SimpleBleAdapterIdentifier(adapter);
-  PeripheralIdentifier := SimpleBlePeripheralIdentifier(peripheral);
-  PeripheralAddress := SimpleBlePeripheralAddress(peripheral);
-  if (AdapterIdentifier = '') or (PeripheralAddress = '') then
-    Exit;
-  WriteLn('Adapter ' + AdapterIdentifier + ' found device: ' + PeripheralIdentifier + ' [' + PeripheralAddress + ']');
-  if PeripheralListLen < PERIPHERAL_LIST_SIZE then
-  begin
-    // Save the peripheral
-    PeripheralList[PeripheralListLen] := peripheral;
-    Inc(PeripheralListLen)
-  end
-  else
-  begin
-    // As there was no space left for this peripheral, release the associated handle.
-    SimpleBlePeripheralReleaseHandle(peripheral);
+  AdapterIdentifier := nil;
+  PeripheralIdentifier := nil;
+  PeripheralAddress := nil;
+  Stored := False;
+  try
+    AdapterIdentifier := SimpleBleAdapterIdentifier(Adapter);
+    PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
+    PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
+    if (AdapterIdentifier = nil) or (PeripheralIdentifier = nil) or
+      (PeripheralAddress = nil) then
+      Exit;
+    WriteLn('Adapter ' + AdapterIdentifier + ' found device: ' +
+      PeripheralIdentifier + ' [' + PeripheralAddress + ']');
+    if PeripheralListLen < PERIPHERAL_LIST_SIZE then
+    begin
+      PeripheralList[PeripheralListLen] := Peripheral;
+      Inc(PeripheralListLen);
+      Stored := True;
+    end;
+  finally
+    if not Stored then
+      SimpleBlePeripheralReleaseHandle(Peripheral);
+    SimpleBleFree(AdapterIdentifier);
+    SimpleBleFree(PeripheralIdentifier);
+    SimpleBleFree(PeripheralAddress);
   end;
-  SimpleBleFree(PeripheralIdentifier);
-  SimpleBleFree(PeripheralAddress);
 end;
 
 procedure PeripheralOnNotify(Peripheral: TSimpleBlePeripheral;
@@ -114,7 +152,12 @@ var
   i: Integer;
 begin
   write('Received[' + IntToStr(DataLength) + ']: ');
-  for i := 0 to (DataLength-1) do
+  if (Data = nil) and (DataLength > 0) then
+  begin
+    WriteLn('<invalid null buffer>');
+    Exit;
+  end;
+  for i := 0 to Integer(DataLength) - 1 do
     write(IntToStr(data[i]) + ' ');
   WriteLn();
 end;
@@ -125,19 +168,18 @@ end;
 procedure TSimpleBleNotifyExample.DoRun;
 var
   ErrorMsg: String;
-  Adapter: TSimpleBleAdapter;
   ErrCode: TSimpleBleErr = SIMPLEBLE_SUCCESS;
-  i, j, k, Selection, CharacteristicCount: Integer;
+  i, j, Selection, CharacteristicCount: Integer;
   Peripheral: TSimpleBlePeripheral;
   PeripheralIdentifier: PChar;
   PeripheralAddress: PChar;
   Service: TSimpleBleService;
 begin
 
-  if not SimpleBleLoadLibrary() then begin
-    writeln('Failed to load library');
-    readln;
-    exit;
+  if not LoadNativeLibraries() then begin
+    WriteLn('Failed to load library: ' + SimpleBleGetLastLoadError());
+    Terminate;
+    Exit;
   end;
 
   // quick check parameters
@@ -201,6 +243,7 @@ begin
   begin
     WriteLn('Invalid selection.');
     Terminate;
+    Exit;
   end;
 
   // connect to selected device
@@ -215,20 +258,23 @@ begin
   begin
     WriteLn('Failed to connect.');
     Terminate;
+    Exit;
   end;
   WriteLn('Successfully connected, listing services and characteristics.');
 
   // show list of characteristics to select one to subscribe to notifications
   CharacteristicCount := 0;
-  for i := 0 to (SimpleBlePeripheralServicesCount(Peripheral)-1) do
+  for i := 0 to Integer(SimpleBlePeripheralServicesCount(Peripheral)) - 1 do
   begin
+    Service := Default(TSimpleBleService);
     ErrCode := SimpleBlePeripheralServicesGet(Peripheral, i, Service);
     if ErrCode <> SIMPLEBLE_SUCCESS then
     begin
       WriteLn('Failed to get service.');
       Terminate;
+      Exit;
     end;
-    for j := 0 to (Service.CharacteristicCount-1) do
+    for j := 0 to Integer(Service.CharacteristicCount) - 1 do
     begin
       if CharacteristicCount >= SERVICES_LIST_SIZE then
         break;
@@ -247,10 +293,19 @@ begin
   begin
     WriteLn('Invalid selection.');
     Terminate;
+    Exit;
   end;
 
   // subscribe to notification and register callback function
-  SimpleBlePeripheralNotify(Peripheral, CharacteristicList[Selection].Service, CharacteristicList[Selection].Characteristic, @PeripheralOnNotify, Nil);
+  ErrCode := SimpleBlePeripheralNotify(Peripheral,
+    CharacteristicList[Selection].Service,
+    CharacteristicList[Selection].Characteristic, @PeripheralOnNotify, nil);
+  if ErrCode <> SIMPLEBLE_SUCCESS then
+  begin
+    WriteLn('Failed to subscribe to notifications.');
+    Terminate;
+    Exit;
+  end;
 
   // sleep 5 sec, during these 5 secs the Peripheral needs to update the characteristic value
   Sleep(5000);
@@ -263,11 +318,6 @@ begin
 
   // wait for enter
   ReadLn();
-
-  // release the BLE handle
-  SimpleBleAdapterReleaseHandle(Adapter);
-
-  SimpleBleUnloadLibrary();
 
   // stop program loop
   Terminate;
@@ -283,13 +333,15 @@ destructor TSimpleBleNotifyExample.Destroy;
 var
   i: Integer;
 begin
-  inherited Destroy;
   WriteLn('Releasing allocated resources.');
   // Release all saved peripherals
-  for i := 0 to (PeripheralListLen - 1) do
+  for i := 0 to Integer(PeripheralListLen) - 1 do
     SimpleBlePeripheralReleaseHandle(PeripheralList[i]);
   // Let's not forget to release the associated handle.
-  SimpleBleAdapterReleaseHandle(Adapter);
+  if Adapter <> nil then
+    SimpleBleAdapterReleaseHandle(Adapter);
+  SimpleBleUnloadLibrary();
+  inherited Destroy;
 end;
 
 procedure TSimpleBleNotifyExample.WriteHelp;

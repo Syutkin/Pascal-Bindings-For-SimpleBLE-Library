@@ -4,14 +4,19 @@ program SimpleBleScanExample;
 
 { Lazarus / Free Pascal BLE scan example for SimpleBLE library.
 
-  This project is Copyright (c) 2022 Erik Lins and released under the MIT License.
+  The original example is Copyright (c) 2022 Erik Lins.
     https://github.com/eriklins/Pascal-Bindings-For-SimpleBLE-Library
+
+  Modifications are Copyright (c) 2026 Andrey Syutkin.
+    https://github.com/Syutkin/Pascal-Bindings-For-SimpleBLE-Library
+
+  The example and modifications are released under the MIT License.
 
   This example is a port of the C scan example in SimpleBLE to Lazarus/FreePascal.
     https://github.com/OpenBluetoothToolbox/SimpleBLE/tree/main/examples/simpleble/c/scan
 
-  The SimpleBLE library is Copyright (c) 2021-2022 Kevin Dewald and released under the MIT License.
-    https://github.com/OpenBluetoothToolbox/SimpleBLE
+  The native SimpleBLE library has its own BUSL-1.1/commercial licensing terms.
+    https://github.com/simpleble/simpleble
 }
 
 {$UNDEF DYNAMIC_LOADING}
@@ -38,6 +43,25 @@ type
     procedure WriteHelp; virtual;
   end;
 
+function LoadNativeLibraries: Boolean;
+var
+  LibraryDirectory: string;
+begin
+  LibraryDirectory := GetEnvironmentVariable('SIMPLECBLE_LIBRARY_DIR');
+  if LibraryDirectory <> '' then
+  begin
+    Result := SimpleBleLoadLibrary(LibraryDirectory);
+    if Result then
+      Exit;
+  end;
+
+  Result := SimpleBleLoadLibrary(ExtractFilePath(ParamStr(0)));
+  if Result then
+    Exit;
+
+  Result := SimpleBleLoadLibrary();
+end;
+
 
 { Callback functions for SimpleBLE }
 
@@ -46,10 +70,13 @@ var
   Identifier: PChar;
 begin
   Identifier := SimpleBleAdapterIdentifier(Adapter);
-  if Identifier = '' then
-    Exit;
-  WriteLn('Adapter ' + Identifier + ' started scanning.');
-  SimpleBleFree(Identifier);
+  try
+    if Identifier = nil then
+      Exit;
+    WriteLn('Adapter ' + Identifier + ' started scanning.');
+  finally
+    SimpleBleFree(Identifier);
+  end;
 end;
 
 procedure AdapterOnScanStop(Adapter: TSimplebleAdapter; Userdata: Pointer); cdecl;
@@ -57,10 +84,13 @@ var
   Identifier: PChar;
 begin
   Identifier := SimpleBleAdapterIdentifier(Adapter);
-  if Identifier = '' then
-    Exit;
-  WriteLn('Adapter ' + Identifier + ' stopped scanning.');
-  SimpleBleFree(Identifier);
+  try
+    if Identifier = nil then
+      Exit;
+    WriteLn('Adapter ' + Identifier + ' stopped scanning.');
+  finally
+    SimpleBleFree(Identifier);
+  end;
 end;
 
 procedure AdapterOnScanFound(Adapter: TSimplebleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: Pointer); cdecl;
@@ -72,31 +102,39 @@ var
   ManufData: TSimpleBleManufacturerData;
   i, j, rssi: Integer;
 begin
-  AdapterIdentifier := SimpleBleAdapterIdentifier(Adapter);
-  PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
-  PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
-  if (AdapterIdentifier = '') or (PeripheralAddress = '') then
-    Exit;
-  rssi := SimpleBlePeripheralRssi(Peripheral);
-  ManufDataCount := SimpleBlePeripheralManufacturerDataCount(Peripheral);
-  Write('device found  : [' + PeripheralAddress + '] ' + IntToStr(rssi) + 'dBm "' + PeripheralIdentifier + '"');
-  if (ManufDataCount > 0) then
-  begin
-    for i := 0 to (ManufDataCount-1) do
+  AdapterIdentifier := nil;
+  PeripheralIdentifier := nil;
+  PeripheralAddress := nil;
+  try
+    AdapterIdentifier := SimpleBleAdapterIdentifier(Adapter);
+    PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
+    PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
+    if (AdapterIdentifier = nil) or (PeripheralIdentifier = nil) or
+      (PeripheralAddress = nil) then
+      Exit;
+    rssi := SimpleBlePeripheralRssi(Peripheral);
+    ManufDataCount := SimpleBlePeripheralManufacturerDataCount(Peripheral);
+    Write('device found  : [' + PeripheralAddress + '] ' + IntToStr(rssi) + 'dBm "' + PeripheralIdentifier + '"');
+    if ManufDataCount > 0 then
     begin
-      SimpleBlePeripheralManufacturerDataGet(Peripheral, i, ManufData);
-      write(' MD[' + IntToStr(i) + ']=0x');
-      for j := 0 to ManufData.DataLength do
+      for i := 0 to Integer(ManufDataCount) - 1 do
       begin
-        write(IntToHex(ManufData.Data[j]));
+        ManufData := Default(TSimpleBleManufacturerData);
+        if SimpleBlePeripheralManufacturerDataGet(Peripheral, i, ManufData) <>
+          SIMPLEBLE_SUCCESS then
+          Continue;
+        Write(' MD[' + IntToStr(i) + ']=0x');
+        for j := 0 to Integer(ManufData.DataLength) - 1 do
+          Write(IntToHex(ManufData.Data[j]));
       end;
     end;
+    WriteLn();
+  finally
+    SimpleBleFree(AdapterIdentifier);
+    SimpleBleFree(PeripheralIdentifier);
+    SimpleBleFree(PeripheralAddress);
+    SimpleBlePeripheralReleaseHandle(Peripheral);
   end;
-  writeln();
-
-  SimpleBlePeripheralReleaseHandle(Peripheral);
-  SimpleBleFree(PeripheralIdentifier);
-  SimpleBleFree(PeripheralAddress);
 end;
 
 procedure AdapterOnScanUpdated(Adapter: TSimplebleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: Pointer); cdecl;
@@ -108,31 +146,39 @@ var
   ManufData: TSimpleBleManufacturerData;
   i, j, rssi: Integer;
 begin
-  AdapterIdentifier := SimpleBleAdapterIdentifier(Adapter);
-  PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
-  PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
-  if (AdapterIdentifier = '') or (PeripheralAddress = '') then
-    Exit;
-  rssi := SimpleBlePeripheralRssi(Peripheral);
-  ManufDataCount := SimpleBlePeripheralManufacturerDataCount(Peripheral);
-  Write('device updated: [' + PeripheralAddress + '] ' + IntToStr(rssi) + 'dBm "' + PeripheralIdentifier + '"');
-  if (ManufDataCount > 0) then
-  begin
-    for i := 0 to (ManufDataCount-1) do
+  AdapterIdentifier := nil;
+  PeripheralIdentifier := nil;
+  PeripheralAddress := nil;
+  try
+    AdapterIdentifier := SimpleBleAdapterIdentifier(Adapter);
+    PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
+    PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
+    if (AdapterIdentifier = nil) or (PeripheralIdentifier = nil) or
+      (PeripheralAddress = nil) then
+      Exit;
+    rssi := SimpleBlePeripheralRssi(Peripheral);
+    ManufDataCount := SimpleBlePeripheralManufacturerDataCount(Peripheral);
+    Write('device updated: [' + PeripheralAddress + '] ' + IntToStr(rssi) + 'dBm "' + PeripheralIdentifier + '"');
+    if ManufDataCount > 0 then
     begin
-      SimpleBlePeripheralManufacturerDataGet(Peripheral, i, ManufData);
-      write(' MD[' + IntToStr(i) + ']=0x');
-      for j := 0 to ManufData.DataLength do
+      for i := 0 to Integer(ManufDataCount) - 1 do
       begin
-        write(IntToHex(ManufData.Data[j]));
+        ManufData := Default(TSimpleBleManufacturerData);
+        if SimpleBlePeripheralManufacturerDataGet(Peripheral, i, ManufData) <>
+          SIMPLEBLE_SUCCESS then
+          Continue;
+        Write(' MD[' + IntToStr(i) + ']=0x');
+        for j := 0 to Integer(ManufData.DataLength) - 1 do
+          Write(IntToHex(ManufData.Data[j]));
       end;
     end;
+    WriteLn();
+  finally
+    SimpleBleFree(AdapterIdentifier);
+    SimpleBleFree(PeripheralIdentifier);
+    SimpleBleFree(PeripheralAddress);
+    SimpleBlePeripheralReleaseHandle(Peripheral);
   end;
-  writeln();
-
-  SimpleBlePeripheralReleaseHandle(Peripheral);
-  SimpleBleFree(PeripheralIdentifier);
-  SimpleBleFree(PeripheralAddress);
 end;
 
 { -------------------------------- }
@@ -145,16 +191,17 @@ var
 
 begin
 
-  if not SimpleBleLoadLibrary() then begin
-    writeln('Failed to load library');
-    readln;
-    exit;
+  if not LoadNativeLibraries() then begin
+    WriteLn('Failed to load library: ' + SimpleBleGetLastLoadError());
+    Terminate;
+    Exit;
   end;
 
   // quick check parameters
   ErrorMsg:=CheckOptions('h', 'help');
   if ErrorMsg<>'' then begin
     ShowException(Exception.Create(ErrorMsg));
+    SimpleBleUnloadLibrary();
     Terminate;
     Exit;
   end;
@@ -162,6 +209,7 @@ begin
   // parse parameters
   if HasOption('h', 'help') then begin
     WriteHelp;
+    SimpleBleUnloadLibrary();
     Terminate;
     Exit;
   end;
@@ -170,6 +218,7 @@ begin
   if SimpleBleAdapterGetCount() = 0 then
   begin
     WriteLn('No BLE adapter was found.');
+    SimpleBleUnloadLibrary();
     Terminate;
     Exit;
   end;
@@ -179,6 +228,7 @@ begin
   if Adapter = nil then
   begin
     WriteLn('Could not get handle for BLE adapter.');
+    SimpleBleUnloadLibrary();
     Terminate;
     Exit
   end;

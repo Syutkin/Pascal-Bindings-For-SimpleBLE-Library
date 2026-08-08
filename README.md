@@ -1,6 +1,9 @@
 # Pascal Bindings For SimpleBLE Library
 These are Lazarus/FreePascal bindings for the SimpleBLE cross-platform Bluetooth LE (BLE) library.
 
+Current Pascal bindings release: **v1.0.0**, targeting the SimpleBLE/SimpleCBLE
+1.0.0 ABI.
+
 ## SimpleBLE
 SimpleBLE is a fully-fledged cross-platform library and bindings for Bluetooth Low Energy (BLE).
 
@@ -42,9 +45,14 @@ The original SimpleBLE project comes with three C examples, which have been port
 There are some more examples, but those are C++ and weren't (yet...) ported to Pascal.
 
 ### Building the Examples
-On Windows the example projects build without issues.
+The examples search for the native libraries in this order:
 
-On Linux (tested on Ubuntu 20.04LTS) it's necessary to copy the shared libraries into the root folder of each example project.
+1. The directory specified by `SIMPLECBLE_LIBRARY_DIR`.
+2. The directory containing the example executable.
+3. The platform's standard dynamic-library search path.
+
+On Linux the third option includes `LD_LIBRARY_PATH`, embedded
+`RPATH`/`RUNPATH`, the loader cache, and standard system library directories.
 
 ### Dynamic Library Loading
 Dynamic loading is enabled by default on all platforms. Call

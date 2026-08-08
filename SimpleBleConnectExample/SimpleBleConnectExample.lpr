@@ -4,14 +4,19 @@ program SimpleBleConnectExample;
 
 { Lazarus / Free Pascal BLE connect example for SimpleBLE library.
 
-  This project is Copyright (c) 2022 Erik Lins and released under the MIT License.
+  The original example is Copyright (c) 2022 Erik Lins.
     https://github.com/eriklins/Pascal-Bindings-For-SimpleBLE-Library
+
+  Modifications are Copyright (c) 2026 Andrey Syutkin.
+    https://github.com/Syutkin/Pascal-Bindings-For-SimpleBLE-Library
+
+  The example and modifications are released under the MIT License.
 
   This example is a port of the C connect example in SimpleBLE to Lazarus/FreePascal.
     https://github.com/OpenBluetoothToolbox/SimpleBLE/tree/main/examples/simpleble/c/connect
 
-  The SimpleBLE library is Copyright (c) 2021-2022 Kevin Dewald and released under the MIT License.
-    https://github.com/OpenBluetoothToolbox/SimpleBLE
+  The native SimpleBLE library has its own BUSL-1.1/commercial licensing terms.
+    https://github.com/simpleble/simpleble
 }
 
 {$UNDEF DYNAMIC_LOADING}
@@ -38,6 +43,25 @@ type
     procedure WriteHelp; virtual;
   end;
 
+function LoadNativeLibraries: Boolean;
+var
+  LibraryDirectory: string;
+begin
+  LibraryDirectory := GetEnvironmentVariable('SIMPLECBLE_LIBRARY_DIR');
+  if LibraryDirectory <> '' then
+  begin
+    Result := SimpleBleLoadLibrary(LibraryDirectory);
+    if Result then
+      Exit;
+  end;
+
+  Result := SimpleBleLoadLibrary(ExtractFilePath(ParamStr(0)));
+  if Result then
+    Exit;
+
+  Result := SimpleBleLoadLibrary();
+end;
+
 const
   PERIPHERAL_LIST_SIZE = 10;
 
@@ -54,10 +78,13 @@ var
   Identifier: PChar;
 begin
   Identifier := SimpleBleAdapterIdentifier(Adapter);
-  if Identifier = '' then
-    Exit;
-  WriteLn('Adapter ' + Identifier + ' started scanning.');
-  SimpleBleFree(Identifier);
+  try
+    if Identifier = nil then
+      Exit;
+    WriteLn('Adapter ' + Identifier + ' started scanning.');
+  finally
+    SimpleBleFree(Identifier);
+  end;
 end;
 
 procedure AdapterOnScanStop(Adapter: TSimpleBleAdapter; Userdata: Pointer); cdecl;
@@ -65,10 +92,13 @@ var
   Identifier: PChar;
 begin
   Identifier := SimpleBleAdapterIdentifier(Adapter);
-  if Identifier = '' then
-    Exit;
-  WriteLn('Adapter ' + Identifier + ' started scanning.');
-  SimpleBleFree(Identifier);
+  try
+    if Identifier = nil then
+      Exit;
+    WriteLn('Adapter ' + Identifier + ' stopped scanning.');
+  finally
+    SimpleBleFree(Identifier);
+  end;
 end;
 
 procedure AdapterOnScanFound(Adapter: TSimpleBleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: Pointer); cdecl;
@@ -76,26 +106,34 @@ var
   AdapterIdentifier: PChar;
   PeripheralIdentifier: PChar;
   PeripheralAddress: PChar;
+  Stored: Boolean;
 begin
-  AdapterIdentifier := SimpleBleAdapterIdentifier(Adapter);
-  PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
-  PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
-  if (AdapterIdentifier = '') or (PeripheralAddress = '') then
-    Exit;
-  WriteLn('Adapter ' + AdapterIdentifier + ' found device: ' + PeripheralIdentifier + ' [' + PeripheralAddress + ']');
-  if PeripheralListLen < PERIPHERAL_LIST_SIZE then
-  begin
-    // Save the Peripheral
-    PeripheralList[PeripheralListLen] := Peripheral;
-    Inc(PeripheralListLen)
-  end
-  else
-  begin
-    // As there was no space left for this Peripheral, release the associated handle.
-    SimpleBlePeripheralReleaseHandle(Peripheral);
+  AdapterIdentifier := nil;
+  PeripheralIdentifier := nil;
+  PeripheralAddress := nil;
+  Stored := False;
+  try
+    AdapterIdentifier := SimpleBleAdapterIdentifier(Adapter);
+    PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
+    PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
+    if (AdapterIdentifier = nil) or (PeripheralIdentifier = nil) or
+      (PeripheralAddress = nil) then
+      Exit;
+    WriteLn('Adapter ' + AdapterIdentifier + ' found device: ' +
+      PeripheralIdentifier + ' [' + PeripheralAddress + ']');
+    if PeripheralListLen < PERIPHERAL_LIST_SIZE then
+    begin
+      PeripheralList[PeripheralListLen] := Peripheral;
+      Inc(PeripheralListLen);
+      Stored := True;
+    end;
+  finally
+    if not Stored then
+      SimpleBlePeripheralReleaseHandle(Peripheral);
+    SimpleBleFree(AdapterIdentifier);
+    SimpleBleFree(PeripheralIdentifier);
+    SimpleBleFree(PeripheralAddress);
   end;
-  SimpleBleFree(PeripheralIdentifier);
-  SimpleBleFree(PeripheralAddress);
 end;
 
 { -------------------------------- }
@@ -104,7 +142,6 @@ end;
 procedure TSimpleBleConnectExample.DoRun;
 var
   ErrorMsg: String;
-  Adapter: TSimpleBleAdapter;
   ErrCode: TSimpleBleErr = SIMPLEBLE_SUCCESS;
   i, j, k, Selection, ServicesCount: Integer;
   Peripheral: TSimpleBlePeripheral;
@@ -113,10 +150,10 @@ var
   Service: TSimpleBleService;
 begin
 
-  if not SimpleBleLoadLibrary() then begin
-    writeln('Failed to load library');
-    readln;
-    exit;
+  if not LoadNativeLibraries() then begin
+    WriteLn('Failed to load library: ' + SimpleBleGetLastLoadError());
+    Terminate;
+    Exit;
   end;
 
   // quick check parameters
@@ -180,6 +217,7 @@ begin
   begin
     WriteLn('Invalid selection.');
     Terminate;
+    Exit;
   end;
 
   // connect to device
@@ -194,6 +232,7 @@ begin
   begin
     WriteLn('Failed to connect.');
     Terminate;
+    Exit;
   end;
   ServicesCount := SimpleBlePeripheralServicesCount(Peripheral);
   WriteLn('Successfully connected, listing ' + IntToStr(ServicesCount) + ' services.');
@@ -201,17 +240,19 @@ begin
   // show gatt table with services and characteristics
   for i := 0 to (ServicesCount - 1) do
   begin
+    Service := Default(TSimpleBleService);
     ErrCode := SimpleBlePeripheralServicesGet(Peripheral, i, Service);
     if ErrCode <> SIMPLEBLE_SUCCESS then
     begin
       WriteLn('Failed to get service.');
       Terminate;
+      Exit;
     end;
     WriteLn('Service: ' + Service.Uuid.Value + ' - (' + IntToStr(Service.CharacteristicCount) + ')');
-    for j := 0 to (Service.CharacteristicCount-1) do
+    for j := 0 to Integer(Service.CharacteristicCount) - 1 do
     begin
       WriteLn('  Characteristic: ' + Service.Characteristics[j].Uuid.Value + ' - (' + IntToStr(Service.Characteristics[j].DescriptorCount) + ')');
-      for k := 0 to (Service.Characteristics[j].DescriptorCount - 1) do
+      for k := 0 to Integer(Service.Characteristics[j].DescriptorCount) - 1 do
         WriteLn('    Descriptor: ' + Service.Characteristics[j].Descriptors[k].Uuid.Value);
     end;
   end;
@@ -221,11 +262,6 @@ begin
 
   // and disconnect again from device
   SimpleBlePeripheralDisconnect(Peripheral);
-
-  // release the BLE handle
-  SimpleBleAdapterReleaseHandle(Adapter);
-
-  SimpleBleUnloadLibrary();
 
   // stop program loop
   Terminate;
@@ -241,13 +277,15 @@ destructor TSimpleBleConnectExample.Destroy;
 var
   i: Integer;
 begin
-  inherited Destroy;
   WriteLn('Releasing allocated resources.');
   // Release all saved peripherals
   for i := 0 to (PeripheralListLen - 1) do
-    SimpleBleAdapterReleaseHandle(PeripheralList[i]);
+    SimpleBlePeripheralReleaseHandle(PeripheralList[i]);
   // Let's not forget to release the associated handle.
-  SimpleBleAdapterReleaseHandle(Adapter);
+  if Adapter <> nil then
+    SimpleBleAdapterReleaseHandle(Adapter);
+  SimpleBleUnloadLibrary();
+  inherited Destroy;
 end;
 
 procedure TSimpleBleConnectExample.WriteHelp;
