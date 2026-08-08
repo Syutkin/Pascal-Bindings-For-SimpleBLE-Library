@@ -98,6 +98,8 @@ I'm far from being an expert in Pascal programming, but liked and used Lazarus/F
 ## License
 Copyright (C) 2022 Erik Lins
 
+Copyright (C) 2026 Andrey Syutkin (modifications)
+
 The Pascal bindings are released under the MIT License. The native SimpleBLE
 libraries retain their own BUSL-1.1/commercial licensing terms; the Pascal
 license does not relicense native binaries.
