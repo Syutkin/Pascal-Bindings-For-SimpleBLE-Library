@@ -8,13 +8,12 @@ unit SimpleBle;
   Pascal bindings are Copyright (c) 2022-2023 Erik Lins and released under the MIT License.
     https://github.com/eriklins/Pascal-Bindings-For-SimpleBLE-Library
 
-  The SimpleBLE library is Copyright (c) 2021-2022 Kevin Dewald and released under the MIT License.
-    https://github.com/OpenBluetoothToolbox/SimpleBLE
+  The native SimpleBLE library has its own BUSL-1.1/commercial licensing terms.
+    https://github.com/simpleble/simpleble
 }
 
-{$UNDEF DYNAMIC_LOADING}
-{$IFDEF WINDOWS}
-  {$DEFINE DYNAMIC_LOADING}    { UNCOMMENT IF YOU WANT DYNAMIC LOADING }
+{$IFNDEF SIMPLEBLE_STATIC}
+  {$DEFINE DYNAMIC_LOADING}
 {$ENDIF}
 
 
@@ -32,12 +31,15 @@ uses
 
 const
   {$IFDEF WINDOWS}
-    SimpleBleExtLibrary = 'simpleble-c.dll';
+    SimpleBleExtLibrary = 'simplecble.dll';
+    SimpleBleCoreLibrary = 'simpleble.dll';
   {$ELSE}
     {$IFDEF DARWIN}
-      SimpleBleExtLibrary = 'simpleble-c.dylib';
+      SimpleBleExtLibrary = 'libsimplecble.dylib';
+      SimpleBleCoreLibrary = 'libsimpleble.dylib';
     {$ELSE}
-      SimpleBleExtLibrary = 'simpleble-c.so';
+      SimpleBleExtLibrary = 'libsimplecble.so';
+      SimpleBleCoreLibrary = 'libsimpleble.so';
     {$ENDIF}
   {$ENDIF}
 
@@ -380,7 +382,7 @@ function SimpleBleGetVersion(): PChar; cdecl; external SimpleBleExtLibrary name 
 
 {$ELSE}
 
-// the below is for dynamically loading the DLL libraries on Windows only!
+// Dynamic loading is the default on all supported platforms.
 
 
 // define function for dynamically loading/unloading the DLL
@@ -493,7 +495,8 @@ implementation
 {$IFDEF DYNAMIC_LOADING}
 
 var
-  hLib : TLibHandle = 0;
+  hCoreLib: TLibHandle = 0;
+  hLib: TLibHandle = 0;
 
 
 { Clear the pointers to the functions and procedures }
@@ -565,17 +568,27 @@ end;
 { Load the DLL file with an optional path specified }
 function SimpleBleLoadLibrary(dllPath:string=''): Boolean;
 begin
-  result := false;
-  ClearPointers;
+  Result := False;
+  SimpleBleUnloadLibrary;
   if dllPath <> '' then begin
     if not DirectoryExists(dllPath) then exit;
     if rightstr(dllPath,1) <> DirectorySeparator then dllPath := dllPath + DirectorySeparator;
+    if not FileExists(dllPath + SimpleBleCoreLibrary) then exit;
     if not FileExists(dllPath + SimpleBleExtLibrary) then exit;
+    hCoreLib := LoadLibrary(PChar(dllPath + SimpleBleCoreLibrary));
+    if hCoreLib = 0 then exit;
     hLib := LoadLibrary(PChar(dllPath + SimpleBleExtLibrary));
   end else begin
+    hCoreLib := LoadLibrary(PChar(SimpleBleCoreLibrary));
+    if hCoreLib = 0 then exit;
     hLib := LoadLibrary(PChar(SimpleBleExtLibrary));
   end;
-  if hLib = 0 then exit;
+  if hLib = 0 then
+  begin
+    UnloadLibrary(hCoreLib);
+    hCoreLib := 0;
+    exit;
+  end;
 
   try
     { functions from SimpleBLE adapter.h }
@@ -724,9 +737,18 @@ begin
     UnloadLibrary(hLib);
     hLib := 0;
   end;
+  if hCoreLib <> 0 then
+  begin
+    UnloadLibrary(hCoreLib);
+    hCoreLib := 0;
+  end;
 end;
 
 {$ENDIF}
 
-end.
+{$IFDEF DYNAMIC_LOADING}
+finalization
+  SimpleBleUnloadLibrary;
+{$ENDIF}
 
+end.

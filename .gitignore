@@ -3,3 +3,4 @@
 **/release_packages
 *.lps
 *.zip
+build/

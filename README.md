@@ -15,9 +15,10 @@ The SimpleBLE bindings come as a single-file Pascal unit and this is in the fold
 
 To actually use the SimpleBLE functions in the compiled application, the corresponding shared libraries need to be copied into the same path as the compiled application. (Alternatively other location could be used, provided it's on the PATH or it's some system wide location like Windows\System32 - however, at least the latter is usually not recommended.)
 
-Here is a list of required files:
+Here is a list of required files for SimpleBLE 1.0.0:
 * **simpleble.pas**: The Pascal unit with SimpleBLE bindings.
-* **simpleble-c.dll, simpleble.dll, fmt.dll**: The three shared libraries with all the SimpleBLE functionality in. You need all three of them.
+* **simplecble**: The shared C API library (`simplecble.dll`, `libsimplecble.so`, or `libsimplecble.dylib`).
+* **simpleble**: The native implementation loaded by SimpleCBLE (`simpleble.dll`, `libsimpleble.so`, or `libsimpleble.dylib`).
 
 On Windows systems shared libraries use the extension ".dll", but on other systems this is different (like .so on Linux/Unix).
 
@@ -45,8 +46,22 @@ On Windows the example projects build without issues.
 
 On Linux (tested on Ubuntu 20.04LTS) it's necessary to copy the shared libraries into the root folder of each example project.
 
-### Dynamic Library Loading on Windows
-By default the DLLs will be loaded statically and if there is a problem (e.g. DLL file not found) then the program will throw a system error and fail. By enabling dynamic loading of the DLL with {$DEFINE DYNAMIC_LOADING} in SimpleBle.pas and adding the respective code for loading to your application (see examples for details), now the application could handle the error (e.g. providing an error message or operate at reduced functionality). Thanks to @Gnome16 for contributing this.
+### Dynamic Library Loading
+Dynamic loading is enabled by default on all platforms. Call
+`SimpleBleLoadLibrary` with the directory containing both native libraries and
+call `SimpleBleUnloadLibrary` during shutdown. Define `SIMPLEBLE_STATIC` when
+compiling the unit only when static linking is configured explicitly.
+
+## Tests
+
+The native loader tests do not require a BLE adapter. Point
+`SIMPLECBLE_LIBRARY_DIR` to a directory containing both shared libraries:
+
+```sh
+lazbuild --ws=qt6 tests/simpleblebindingstests.lpi
+SIMPLECBLE_LIBRARY_DIR=/path/to/libraries \
+  tests/bin/simpleblebindingstests --all --format=plain
+```
 
 ## Building the SimpleBLE Shared Libraries
 The SimpleBLE project comes with batch files / shell scripts for Windows / Linux which automagically compile the shared libraries. These are located in the "utils" folder of the SimpleBLE repo. However, for me it did not work under Linux/Ubuntu properly.
@@ -66,4 +81,6 @@ I'm far from being an expert in Pascal programming, but liked and used Lazarus/F
 ## License
 Copyright (C) 2022 Erik Lins
 
-This project is released under the MIT License.
+The Pascal bindings are released under the MIT License. The native SimpleBLE
+libraries retain their own BUSL-1.1/commercial licensing terms; the Pascal
+license does not relicense native binaries.
