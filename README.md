@@ -1,7 +1,7 @@
 # Pascal Bindings For SimpleBLE Library
 These are Lazarus/FreePascal bindings for the SimpleBLE cross-platform Bluetooth LE (BLE) library.
 
-Current Pascal bindings release: **v1.0.0**, targeting the SimpleBLE/SimpleCBLE
+Current Pascal bindings release: **v1.0.1**, targeting the SimpleBLE/SimpleCBLE
 1.0.0 ABI.
 
 ## SimpleBLE
@@ -25,16 +25,19 @@ explicit directory to load libraries from that location, including when the
 libraries are stored next to the executable. Calling it without a directory
 uses the platform's standard dynamic-library search path. Call
 `SimpleBleUnloadLibrary` only after subscriptions, callbacks and native handles
-have been released.
+have been released. A backend that uses adapters or callbacks should call
+`SimpleBlePinLibrary` after a successful load. Pinning is process-wide and
+keeps the native libraries mapped until process termination, while
+`SimpleBleUnloadLibrary` still clears the resolved Pascal API pointers.
 
-Pascal bindings release v1.0.0 targets the SimpleCBLE 1.0.0 ABI and requires:
+Pascal bindings release v1.0.1 targets the SimpleCBLE 1.0.0 ABI and requires:
 
 * `SimpleBleUnit/simpleble.pas`: the Pascal declarations and dynamic loader;
 * `simplecble.dll`, `libsimplecble.so`, or `libsimplecble.dylib`: the C ABI;
 * `simpleble.dll`, `libsimpleble.so`, or `libsimpleble.dylib`: the native
   implementation used by SimpleCBLE.
 
-Release v1.0.0 has been built and tested with Lazarus 4.8 and Free Pascal
+Release v1.0.1 has been built and tested with Lazarus 4.8 and Free Pascal
 3.2.2 on Linux x86_64. The current fork has not yet been verified on Windows.
 
 ## Examples
@@ -78,6 +81,12 @@ Dynamic loading is enabled by default on all platforms. Call
 call `SimpleBleUnloadLibrary` during shutdown. When loading fails,
 `SimpleBleGetLastLoadError` returns a diagnostic. Define `SIMPLEBLE_STATIC`
 when compiling the unit only when static linking is configured explicitly.
+
+Call `SimpleBlePinLibrary` before using adapter callbacks in a long-lived
+backend. This prevents a late native backend destructor from referring to
+callback code in an already unloaded SimpleCBLE library. Pinning cannot be
+reversed during the process lifetime; the operating system releases the
+libraries when the process exits. With static linking the call is a no-op.
 
 Strings returned by adapter/peripheral identifier and address functions, and
 buffers returned by read functions, belong to SimpleCBLE and must be released

@@ -171,6 +171,7 @@ const
   SIMPLEBLE_CONFIG_ANDROID_CONNECTION_PRIORITY_LOW_POWER = 2;
   SIMPLEBLE_CONFIG_ANDROID_CONNECTION_PRIORITY_DCK = 3;
 
+procedure SimpleBlePinLibrary();
 
 {$IFNDEF DYNAMIC_LOADING}
 
@@ -619,12 +620,19 @@ var
 
 implementation
 
+{$IFNDEF DYNAMIC_LOADING}
+procedure SimpleBlePinLibrary();
+begin
+end;
+{$ENDIF}
+
 {$IFDEF DYNAMIC_LOADING}
 
 var
   hCoreLib: TLibHandle = 0;
   hLib: TLibHandle = 0;
   LastLoadError: string = '';
+  LibraryPinned: Boolean = False;
 
 
 { Clear the pointers to the functions and procedures }
@@ -1019,10 +1027,20 @@ begin
 end;
 
 
+{ Keep the native libraries mapped until process termination. This is needed
+  when a native backend retains callbacks whose code belongs to SimpleCBLE. }
+procedure SimpleBlePinLibrary();
+begin
+  LibraryPinned := True;
+end;
+
+
 { Unload the DLL }
 procedure SimpleBleUnloadLibrary();
 begin
   ClearPointers;
+  if LibraryPinned then
+    exit;
   if hLib <> 0 then
   begin
     UnloadLibrary(hLib);
