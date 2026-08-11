@@ -1,7 +1,7 @@
 # Pascal Bindings For SimpleBLE Library
 These are Lazarus/FreePascal bindings for the SimpleBLE cross-platform Bluetooth LE (BLE) library.
 
-Current Pascal bindings release: **v1.0.1**, targeting the SimpleBLE/SimpleCBLE
+Current Pascal bindings release: **v1.0.2**, targeting the SimpleBLE/SimpleCBLE
 1.0.0 ABI.
 
 ## SimpleBLE
@@ -30,14 +30,14 @@ have been released. A backend that uses adapters or callbacks should call
 keeps the native libraries mapped until process termination, while
 `SimpleBleUnloadLibrary` still clears the resolved Pascal API pointers.
 
-Pascal bindings release v1.0.1 targets the SimpleCBLE 1.0.0 ABI and requires:
+Pascal bindings release v1.0.2 targets the SimpleCBLE 1.0.0 ABI and requires:
 
 * `SimpleBleUnit/simpleble.pas`: the Pascal declarations and dynamic loader;
 * `simplecble.dll`, `libsimplecble.so`, or `libsimplecble.dylib`: the C ABI;
 * `simpleble.dll`, `libsimpleble.so`, or `libsimpleble.dylib`: the native
   implementation used by SimpleCBLE.
 
-Release v1.0.1 has been built and tested with Lazarus 4.8 and Free Pascal
+Release v1.0.2 has been built and tested with Lazarus 4.8 and Free Pascal
 3.2.2 on Linux x86_64. The current fork has not yet been verified on Windows.
 
 ## Examples

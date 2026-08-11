@@ -11,7 +11,7 @@ begin
   with Installer do
   begin
     Package := AddPackage('simpleblepascal');
-    Package.Version := '1.0.0';
+    Package.Version := '1.0.2';
     Package.Author := 'Erik Lins, Andrey Syutkin';
     Package.License := 'MIT';
     Package.Description :=
