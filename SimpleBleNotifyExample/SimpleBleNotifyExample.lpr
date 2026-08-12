@@ -13,7 +13,7 @@ program SimpleBleNotifyExample;
   The example and modifications are released under the MIT License.
 
   This example is a port of the C notify example in SimpleBLE to Lazarus/FreePascal.
-    https://github.com/OpenBluetoothToolbox/SimpleBLE/tree/main/examples/simpleble/c/notify
+    https://github.com/simpleble/simpleble/tree/main/examples/simpleble/c/notify
 
   The native SimpleBLE library has its own BUSL-1.1/commercial licensing terms.
     https://github.com/simpleble/simpleble

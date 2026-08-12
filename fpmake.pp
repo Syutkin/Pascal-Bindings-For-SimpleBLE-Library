@@ -11,11 +11,11 @@ begin
   with Installer do
   begin
     Package := AddPackage('simpleblepascal');
-    Package.Version := '1.0.2';
+    Package.Version := '1.1.0';
     Package.Author := 'Erik Lins, Andrey Syutkin';
     Package.License := 'MIT';
     Package.Description :=
-      'Free Pascal bindings for the SimpleBLE/SimpleCBLE 1.0.0 C ABI';
+      'Free Pascal bindings for the SimpleBLE/SimpleCBLE 1.1.0 C ABI';
     Package.SourcePath.Add('SimpleBleUnit');
     Package.Targets.AddUnit('simpleble.pas');
     Run;

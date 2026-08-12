@@ -20,7 +20,7 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure LoadsSimpleCBleVersionOne;
+    procedure LoadsSimpleCbleVersionOnePointOne;
     procedure RejectsMissingDirectoryWithDiagnostic;
     procedure RejectsDirectoryWithoutNativeLibraries;
     procedure RejectsDirectoryWithoutSimpleCbleLibrary;
@@ -91,7 +91,7 @@ begin
   inherited TearDown;
 end;
 
-procedure TSimpleBleNativeLoaderTests.LoadsSimpleCBleVersionOne;
+procedure TSimpleBleNativeLoaderTests.LoadsSimpleCbleVersionOnePointOne;
 begin
   AssertTrue('SIMPLECBLE_LIBRARY_DIR must point to the native libraries',
     FLibraryDirectory <> '');
@@ -99,13 +99,15 @@ begin
     SimpleBleLoadLibrary(FLibraryDirectory));
   AssertTrue('simpleble_get_version was not resolved',
     Assigned(SimpleBleGetVersion));
-  AssertTrue('SimpleCBLE 1.0 adapter API was not resolved',
+  AssertTrue('SimpleCBLE 1.1 adapter API was not resolved',
     Assigned(SimpleBleAdapterGetConnectedPeripheralsCount));
-  AssertTrue('SimpleCBLE 1.0 config API was not resolved',
+  AssertTrue('SimpleCBLE 1.1 config API was not resolved',
     Assigned(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs));
-  AssertTrue('SimpleCBLE 1.0 logging API was not resolved',
+  AssertTrue('SimpleCBLE 1.1 Dongl config API was not resolved',
+    Assigned(SimpleBleConfigDonglGetUseDonglBackend));
+  AssertTrue('SimpleCBLE 1.1 logging API was not resolved',
     Assigned(SimpleBleLoggingGetLevel));
-  AssertEquals('Unexpected SimpleCBLE version', '1.0.0',
+  AssertEquals('Unexpected SimpleCBLE version', '1.1.0',
     string(SimpleBleGetVersion()));
 end;
 

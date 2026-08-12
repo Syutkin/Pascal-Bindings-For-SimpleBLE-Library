@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Name Value="SimpleBlePascal"/>
     <Type Value="RunTime"/>
-    <Version Major="1" Minor="0" Release="2"/>
+    <Version Major="1" Minor="1" Release="0"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>

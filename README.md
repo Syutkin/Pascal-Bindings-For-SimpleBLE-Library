@@ -1,8 +1,8 @@
 # Pascal Bindings For SimpleBLE Library
 These are Lazarus/FreePascal bindings for the SimpleBLE cross-platform Bluetooth LE (BLE) library.
 
-Current Pascal bindings release: **v1.0.2**, targeting the SimpleBLE/SimpleCBLE
-1.0.0 ABI.
+Current Pascal bindings release: **v1.1.0**, targeting the SimpleBLE/SimpleCBLE
+1.1.0 ABI.
 
 ## SimpleBLE
 SimpleBLE is a cross-platform native Bluetooth Low Energy library. SimpleCBLE
@@ -30,14 +30,14 @@ have been released. A backend that uses adapters or callbacks should call
 keeps the native libraries mapped until process termination, while
 `SimpleBleUnloadLibrary` still clears the resolved Pascal API pointers.
 
-Pascal bindings release v1.0.2 targets the SimpleCBLE 1.0.0 ABI and requires:
+Pascal bindings release v1.1.0 targets the SimpleCBLE 1.1.0 ABI and requires:
 
 * `SimpleBleUnit/simpleble.pas`: the Pascal declarations and dynamic loader;
 * `simplecble.dll`, `libsimplecble.so`, or `libsimplecble.dylib`: the C ABI;
 * `simpleble.dll`, `libsimpleble.so`, or `libsimpleble.dylib`: the native
   implementation used by SimpleCBLE.
 
-Release v1.0.2 has been built and tested with Lazarus 4.8 and Free Pascal
+Release v1.1.0 has been built and tested with Lazarus 4.8 and Free Pascal
 3.2.2 on Linux x86_64. The current fork has not yet been verified on Windows.
 
 ## Examples
@@ -135,9 +135,9 @@ lazbuild --ws=qt6 simpleblepascal.lpk
 
 ## Building the SimpleBLE Shared Libraries
 This repository does not vendor the SimpleBLE source tree or native binaries.
-Obtain the native SimpleBLE and SimpleCBLE 1.0.0 artifacts from the
-[official v1.0.0 release](https://github.com/simpleble/simpleble/releases/tag/v1.0.0),
-or build the pinned `v1.0.0` tag using the upstream instructions. Do not build
+Obtain the native SimpleBLE and SimpleCBLE 1.1.0 artifacts from the
+[official v1.1.0 release](https://github.com/simpleble/simpleble/releases/tag/v1.1.0),
+or build the pinned `v1.1.0` tag using the upstream instructions. Do not build
 an unpinned `main` branch for this bindings release.
 
 Keep `simpleble` and `simplecble` from the same release and architecture.

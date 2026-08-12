@@ -413,8 +413,6 @@ procedure SimpleBleLoggingLogDefaultFilePath(Path: PChar); cdecl; external Simpl
 
 procedure SimpleBleConfigResetAll(); cdecl; external SimpleBleExtLibrary name 'simpleble_config_reset_all';
 procedure SimpleBleConfigSimpleBluezReset(); cdecl; external SimpleBleExtLibrary name 'simpleble_config_simplebluez_reset';
-function SimpleBleConfigSimpleBluezGetUseLegacyBluezBackend(): Boolean; cdecl; external SimpleBleExtLibrary name 'simpleble_config_simplebluez_get_use_legacy_bluez_backend';
-procedure SimpleBleConfigSimpleBluezSetUseLegacyBluezBackend(Enabled: Boolean); cdecl; external SimpleBleExtLibrary name 'simpleble_config_simplebluez_set_use_legacy_bluez_backend';
 function SimpleBleConfigSimpleBluezGetUseSystemBus(): Boolean; cdecl; external SimpleBleExtLibrary name 'simpleble_config_simplebluez_get_use_system_bus';
 procedure SimpleBleConfigSimpleBluezSetUseSystemBus(Enabled: Boolean); cdecl; external SimpleBleExtLibrary name 'simpleble_config_simplebluez_set_use_system_bus';
 function SimpleBleConfigSimpleBluezGetConnectionTimeoutMs(): Int64; cdecl; external SimpleBleExtLibrary name 'simpleble_config_simplebluez_get_connection_timeout_ms';
@@ -580,8 +578,6 @@ var
 var
   SimpleBleConfigResetAll : procedure(); cdecl;
   SimpleBleConfigSimpleBluezReset : procedure(); cdecl;
-  SimpleBleConfigSimpleBluezGetUseLegacyBluezBackend : function(): Boolean; cdecl;
-  SimpleBleConfigSimpleBluezSetUseLegacyBluezBackend : procedure(Enabled: Boolean); cdecl;
   SimpleBleConfigSimpleBluezGetUseSystemBus : function(): Boolean; cdecl;
   SimpleBleConfigSimpleBluezSetUseSystemBus : procedure(Enabled: Boolean); cdecl;
   SimpleBleConfigSimpleBluezGetConnectionTimeoutMs : function(): Int64; cdecl;
@@ -711,8 +707,6 @@ begin
   { functions from SimpleBLE config.h }
   pointer(SimpleBleConfigResetAll) := Nil;
   pointer(SimpleBleConfigSimpleBluezReset) := Nil;
-  pointer(SimpleBleConfigSimpleBluezGetUseLegacyBluezBackend) := Nil;
-  pointer(SimpleBleConfigSimpleBluezSetUseLegacyBluezBackend) := Nil;
   pointer(SimpleBleConfigSimpleBluezGetUseSystemBus) := Nil;
   pointer(SimpleBleConfigSimpleBluezSetUseSystemBus) := Nil;
   pointer(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs) := Nil;
@@ -867,8 +861,6 @@ begin
     { functions from SimpleBLE config.h }
     pointer(SimpleBleConfigResetAll) := GetProcedureAddress(hLib, 'simpleble_config_reset_all');
     pointer(SimpleBleConfigSimpleBluezReset) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_reset');
-    pointer(SimpleBleConfigSimpleBluezGetUseLegacyBluezBackend) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_get_use_legacy_bluez_backend');
-    pointer(SimpleBleConfigSimpleBluezSetUseLegacyBluezBackend) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_set_use_legacy_bluez_backend');
     pointer(SimpleBleConfigSimpleBluezGetUseSystemBus) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_get_use_system_bus');
     pointer(SimpleBleConfigSimpleBluezSetUseSystemBus) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_set_use_system_bus');
     pointer(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_get_connection_timeout_ms');
@@ -979,8 +971,6 @@ begin
     { functions from SimpleBLE config.h }
     (pointer(SimpleBleConfigResetAll) = Nil) or
     (pointer(SimpleBleConfigSimpleBluezReset) = Nil) or
-    (pointer(SimpleBleConfigSimpleBluezGetUseLegacyBluezBackend) = Nil) or
-    (pointer(SimpleBleConfigSimpleBluezSetUseLegacyBluezBackend) = Nil) or
     (pointer(SimpleBleConfigSimpleBluezGetUseSystemBus) = Nil) or
     (pointer(SimpleBleConfigSimpleBluezSetUseSystemBus) = Nil) or
     (pointer(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs) = Nil) or
@@ -1013,7 +1003,7 @@ begin
 
   then
   begin
-    LastLoadError := 'SimpleCBLE 1.0.0 is missing one or more required symbols';
+    LastLoadError := 'SimpleCBLE 1.1.0 is missing one or more required symbols';
     SimpleBleUnloadLibrary;
     exit;
   end;
