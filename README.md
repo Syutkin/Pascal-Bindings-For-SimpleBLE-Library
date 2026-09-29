@@ -88,15 +88,20 @@ callback code in an already unloaded SimpleCBLE library. Pinning cannot be
 reversed during the process lifetime; the operating system releases the
 libraries when the process exits. With static linking the call is a no-op.
 
-Strings returned by adapter/peripheral identifier and address functions, and
-buffers returned by read functions, belong to SimpleCBLE and must be released
-exactly once with `SimpleBleFree`. The string returned by
-`SimpleBleGetVersion` is `const` and must not be freed. Adapter and peripheral
-handles must be released with their matching release functions after callbacks
-and subscriptions have been detached. Data passed to notification and
-indication callbacks is borrowed from SimpleCBLE and is valid only for the
-duration of the callback. Copy it into Pascal-owned memory before returning if
-it is needed asynchronously.
+### Memory Ownership (SimpleCBLE 1.2.0)
+
+- Free returned strings and read buffers with `SimpleBleFree`; the version
+  string and callback data are borrowed and must not be freed.
+- Release services with `SimpleBleServiceRelease`, manufacturer data with
+  `SimpleBleManufacturerDataRelease`, and errors with `SimpleBleErrorRelease`.
+  `SimpleBleGetService`, `SimpleBleGetManufacturerData`, `SimpleBleReadValue`,
+  `SimpleBleReadDescriptorValue`, and the `SimpleBleTake*` helpers return
+  Pascal-owned copies.
+- Release owned adapter/peripheral handles with their matching functions after
+  removing callbacks and subscriptions. Copy notification data before the
+  callback returns if it is needed later.
+
+The new helpers require the pending 1.2.0 loader update.
 
 ## Tests
 

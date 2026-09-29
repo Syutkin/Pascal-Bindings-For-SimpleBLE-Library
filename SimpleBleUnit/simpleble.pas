@@ -2,6 +2,7 @@ unit SimpleBle;
 
 {$mode ObjFPC}{$H+}
 {$macro on}
+{$pointermath on}
 
 { Lazarus / Free Pascal bindings for the cross-platform SimpleBLE library.
 
@@ -145,6 +146,35 @@ type
   TSimpleBlePasskeyRequestCallback = function(Handle: TSimpleBlePeripheral; Passkey: PChar; UserData: Pointer): Boolean; cdecl;
   TSimpleBlePasskeyDisplayCallback = procedure(Handle: TSimpleBlePeripheral; Passkey: PChar; UserData: Pointer); cdecl;
   TSimpleBleNumericComparisonCallback = function(Handle: TSimpleBlePeripheral; Passkey: PChar; UserData: Pointer): Boolean; cdecl;
+
+  ESimpleBleInvalidNativeData = class(Exception);
+
+  TSimpleBleOwnedCharacteristic = record
+    Uuid: TSimpleBleUuid;
+    CanRead: Boolean;
+    CanWriteRequest: Boolean;
+    CanWriteCommand: Boolean;
+    CanNotify: Boolean;
+    CanIndicate: Boolean;
+    Descriptors: array of TSimpleBleUuid;
+  end;
+
+  TSimpleBleOwnedService = record
+    Uuid: TSimpleBleUuid;
+    Data: TBytes;
+    Characteristics: array of TSimpleBleOwnedCharacteristic;
+  end;
+
+  TSimpleBleOwnedManufacturerData = record
+    ManufacturerId: UInt16;
+    Data: TBytes;
+  end;
+
+  TSimpleBleErrorInfo = record
+    HasError: Boolean;
+    Code: TSimpleBleErr;
+    Message: string;
+  end;
 
 procedure SimpleBlePinLibrary();
 
@@ -543,7 +573,219 @@ procedure SimpleBleFree(Handle: Pointer); cdecl; external SimpleBleExtLibrary na
 
 {$ENDIF}
 
+{ These helpers return Pascal-owned copies. Take/Fetch functions release native
+  allocations even when copying raises an exception or the C call fails. }
+function SimpleBleCopyBufferAndFree(var Buffer: PByte;
+  DataLength: NativeUInt): TBytes;
+function SimpleBleCopyService(const Source: TSimpleBleService): TSimpleBleOwnedService;
+function SimpleBleTakeService(var Source: TSimpleBleService): TSimpleBleOwnedService;
+function SimpleBleGetService(Handle: TSimpleBlePeripheral; Index: NativeUInt;
+  var OutError: TSimpleBleError): TSimpleBleOwnedService;
+function SimpleBleCopyManufacturerData(
+  const Source: TSimpleBleManufacturerData): TSimpleBleOwnedManufacturerData;
+function SimpleBleTakeManufacturerData(
+  var Source: TSimpleBleManufacturerData): TSimpleBleOwnedManufacturerData;
+function SimpleBleGetManufacturerData(Handle: TSimpleBlePeripheral;
+  Index: NativeUInt; var OutError: TSimpleBleError): TSimpleBleOwnedManufacturerData;
+function SimpleBleReadValue(Handle: TSimpleBlePeripheral;
+  Service, Characteristic: TSimpleBleUuid;
+  var OutError: TSimpleBleError): TBytes;
+function SimpleBleReadDescriptorValue(Handle: TSimpleBlePeripheral;
+  Service, Characteristic, Descriptor: TSimpleBleUuid;
+  var OutError: TSimpleBleError): TBytes;
+function SimpleBleCopyErrorInfo(const Error: TSimpleBleError): TSimpleBleErrorInfo;
+function SimpleBleTakeErrorInfo(var Error: TSimpleBleError): TSimpleBleErrorInfo;
+
 implementation
+
+function CheckedArrayLength(Count: NativeUInt; Data: Pointer): SizeInt;
+begin
+  if Count > NativeUInt(High(SizeInt)) then
+    raise ESimpleBleInvalidNativeData.Create('Native array length exceeds SizeInt');
+  if (Count <> 0) and (Data = nil) then
+    raise ESimpleBleInvalidNativeData.Create('Native array has a null pointer');
+  Result := SizeInt(Count);
+end;
+
+function SimpleBleCopyBufferAndFree(var Buffer: PByte;
+  DataLength: NativeUInt): TBytes;
+begin
+  Result := nil;
+  try
+    SetLength(Result, CheckedArrayLength(DataLength, Buffer));
+    if DataLength <> 0 then
+      Move(Buffer^, Result[0], SizeInt(DataLength));
+  finally
+    if Buffer <> nil then
+      SimpleBleFree(Buffer);
+    Buffer := nil;
+  end;
+end;
+
+function SimpleBleCopyService(
+  const Source: TSimpleBleService): TSimpleBleOwnedService;
+var
+  Characteristic: TSimpleBleCharacteristic;
+  CharacteristicIndex: SizeInt;
+  DescriptorIndex: SizeInt;
+  OwnedCharacteristic: ^TSimpleBleOwnedCharacteristic;
+begin
+  Result := Default(TSimpleBleOwnedService);
+  Result.Uuid := Source.Uuid;
+  SetLength(Result.Data, CheckedArrayLength(Source.DataLength, Source.Data));
+  if Source.DataLength <> 0 then
+    Move(Source.Data^, Result.Data[0], SizeInt(Source.DataLength));
+
+  SetLength(Result.Characteristics,
+    CheckedArrayLength(Source.CharacteristicCount, Source.Characteristics));
+  for CharacteristicIndex := 0 to High(Result.Characteristics) do
+  begin
+    Characteristic := Source.Characteristics[CharacteristicIndex];
+    OwnedCharacteristic := @Result.Characteristics[CharacteristicIndex];
+    OwnedCharacteristic^.Uuid := Characteristic.Uuid;
+    OwnedCharacteristic^.CanRead := Characteristic.CanRead;
+    OwnedCharacteristic^.CanWriteRequest := Characteristic.CanWriteRequest;
+    OwnedCharacteristic^.CanWriteCommand := Characteristic.CanWriteCommand;
+    OwnedCharacteristic^.CanNotify := Characteristic.CanNotify;
+    OwnedCharacteristic^.CanIndicate := Characteristic.CanIndicate;
+    SetLength(OwnedCharacteristic^.Descriptors,
+      CheckedArrayLength(Characteristic.DescriptorCount,
+        Characteristic.Descriptors));
+    for DescriptorIndex := 0 to High(OwnedCharacteristic^.Descriptors) do
+      OwnedCharacteristic^.Descriptors[DescriptorIndex] :=
+        Characteristic.Descriptors[DescriptorIndex].Uuid;
+  end;
+end;
+
+function SimpleBleTakeService(
+  var Source: TSimpleBleService): TSimpleBleOwnedService;
+begin
+  try
+    Result := SimpleBleCopyService(Source);
+  finally
+    SimpleBleServiceRelease(Source);
+  end;
+end;
+
+function SimpleBleGetService(Handle: TSimpleBlePeripheral; Index: NativeUInt;
+  var OutError: TSimpleBleError): TSimpleBleOwnedService;
+var
+  Source: TSimpleBleService;
+begin
+  Source := Default(TSimpleBleService);
+  try
+    SimpleBlePeripheralServicesGet(Handle, Index, Source, OutError);
+    if OutError = nil then
+      Result := SimpleBleCopyService(Source)
+    else
+      Result := Default(TSimpleBleOwnedService);
+  finally
+    SimpleBleServiceRelease(Source);
+  end;
+end;
+
+function SimpleBleCopyManufacturerData(
+  const Source: TSimpleBleManufacturerData): TSimpleBleOwnedManufacturerData;
+begin
+  Result := Default(TSimpleBleOwnedManufacturerData);
+  Result.ManufacturerId := Source.ManufacturerId;
+  SetLength(Result.Data, CheckedArrayLength(Source.DataLength, Source.Data));
+  if Source.DataLength <> 0 then
+    Move(Source.Data^, Result.Data[0], SizeInt(Source.DataLength));
+end;
+
+function SimpleBleTakeManufacturerData(
+  var Source: TSimpleBleManufacturerData): TSimpleBleOwnedManufacturerData;
+begin
+  try
+    Result := SimpleBleCopyManufacturerData(Source);
+  finally
+    SimpleBleManufacturerDataRelease(Source);
+  end;
+end;
+
+function SimpleBleGetManufacturerData(Handle: TSimpleBlePeripheral;
+  Index: NativeUInt; var OutError: TSimpleBleError): TSimpleBleOwnedManufacturerData;
+var
+  Source: TSimpleBleManufacturerData;
+begin
+  Source := Default(TSimpleBleManufacturerData);
+  try
+    SimpleBlePeripheralManufacturerDataGet(Handle, Index, Source, OutError);
+    if OutError = nil then
+      Result := SimpleBleCopyManufacturerData(Source)
+    else
+      Result := Default(TSimpleBleOwnedManufacturerData);
+  finally
+    SimpleBleManufacturerDataRelease(Source);
+  end;
+end;
+
+function SimpleBleReadValue(Handle: TSimpleBlePeripheral;
+  Service, Characteristic: TSimpleBleUuid;
+  var OutError: TSimpleBleError): TBytes;
+var
+  Buffer: PByte;
+  DataLength: NativeUInt;
+begin
+  DataLength := 0;
+  Buffer := SimpleBlePeripheralRead(Handle, Service, Characteristic,
+    DataLength, OutError);
+  try
+    if OutError = nil then
+      Result := SimpleBleCopyBufferAndFree(Buffer, DataLength)
+    else
+      Result := nil;
+  finally
+    if Buffer <> nil then
+      SimpleBleFree(Buffer);
+  end;
+end;
+
+function SimpleBleReadDescriptorValue(Handle: TSimpleBlePeripheral;
+  Service, Characteristic, Descriptor: TSimpleBleUuid;
+  var OutError: TSimpleBleError): TBytes;
+var
+  Buffer: PByte;
+  DataLength: NativeUInt;
+begin
+  DataLength := 0;
+  Buffer := SimpleBlePeripheralReadDescriptor(Handle, Service, Characteristic,
+    Descriptor, DataLength, OutError);
+  try
+    if OutError = nil then
+      Result := SimpleBleCopyBufferAndFree(Buffer, DataLength)
+    else
+      Result := nil;
+  finally
+    if Buffer <> nil then
+      SimpleBleFree(Buffer);
+  end;
+end;
+
+function SimpleBleCopyErrorInfo(
+  const Error: TSimpleBleError): TSimpleBleErrorInfo;
+var
+  MessageText: PChar;
+begin
+  Result := Default(TSimpleBleErrorInfo);
+  if Error = nil then
+    Exit;
+  Result.HasError := True;
+  Result.Code := SimpleBleErrorCode(Error);
+  MessageText := SimpleBleErrorMessage(Error);
+  if MessageText <> nil then
+    Result.Message := string(MessageText);
+end;
+
+function SimpleBleTakeErrorInfo(var Error: TSimpleBleError): TSimpleBleErrorInfo;
+begin
+  try
+    Result := SimpleBleCopyErrorInfo(Error);
+  finally
+    SimpleBleErrorRelease(Error);
+  end;
+end;
 
 {$IFNDEF DYNAMIC_LOADING}
 procedure SimpleBlePinLibrary();
