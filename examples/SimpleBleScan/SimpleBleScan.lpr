@@ -1,4 +1,4 @@
-program SimpleBleScanExample;
+program SimpleBleScan;
 
 {$mode objfpc}{$H+}
 

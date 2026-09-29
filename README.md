@@ -50,12 +50,12 @@ this version.
 ## Examples
 The original SimpleBLE project comes with three C examples, which have been ported to Lazarus:
 
-* **SimpleBleScanExample**: A console application based on scan.c from SimpleBLE and demonstrates scanning for BLE advertisements from peripherals. The output shows a list of devices with BLE MAC address, device name (if present), RSSI value and manufacturer data (if present).
-* **SimpleBleConnectExample**: A console application based on connect.c from SimpleBLE and demonstrates
+* **SimpleBleScan**: A console application based on scan.c from SimpleBLE and demonstrates scanning for BLE advertisements from peripherals. The output shows a list of devices with BLE MAC address, device name (if present), RSSI value and manufacturer data (if present).
+* **SimpleBleConnect**: A console application based on connect.c from SimpleBLE and demonstrates
   * Scanning for BLE advertisements from peripherals like above.
   * Selecting a peripheral to connect to.
   * Fetch BLE services, characteristics and descriptors from the peripherals's GATT table and shows as a list.
-* **SimpleBleNotifyExample**: A console application based on notify.c from SimpleBLE and demonstrates
+* **SimpleBleNotify**: A console application based on notify.c from SimpleBLE and demonstrates
   * Scanning for BLE advertisements from peripherals like above.
   * Selecting a peripheral to connect to.
   * Fetch BLE services, characteristics and descriptors from the peripherals's GATT table and shows as a list.
@@ -68,9 +68,9 @@ There are some more examples, but those are C++ and weren't (yet...) ported to P
 Build the console examples from the repository root:
 
 ```sh
-lazbuild --ws=qt6 SimpleBleScanExample/SimpleBleScanExample.lpi
-lazbuild --ws=qt6 SimpleBleConnectExample/SimpleBleConnectExample.lpi
-lazbuild --ws=qt6 SimpleBleNotifyExample/SimpleBleNotifyExample.lpi
+lazbuild --ws=qt6 examples/SimpleBleScan/SimpleBleScan.lpi
+lazbuild --ws=qt6 examples/SimpleBleConnect/SimpleBleConnect.lpi
+lazbuild --ws=qt6 examples/SimpleBleNotify/SimpleBleNotify.lpi
 ```
 
 The examples search for the native libraries in this order:

@@ -1,4 +1,4 @@
-program SimpleBleConnectExample;
+program SimpleBleNotify;
 
 {$mode objfpc}{$H+}
 
@@ -11,10 +11,19 @@ uses
 
 const
   MaxPeripherals = 10;
+  MaxCharacteristics = 32;
+
+type
+  TServiceCharacteristic = record
+    Service: TSimpleBleUuid;
+    Characteristic: TSimpleBleUuid;
+  end;
 
 var
   Peripherals: array[0..MaxPeripherals - 1] of TSimpleBlePeripheral;
   PeripheralCount: Integer = 0;
+  Characteristics: array[0..MaxCharacteristics - 1] of TServiceCharacteristic;
+  CharacteristicCount: Integer = 0;
 
 function LoadNativeLibraries: Boolean;
 var
@@ -75,6 +84,27 @@ begin
   end;
 end;
 
+procedure OnNotify(Peripheral: TSimpleBlePeripheral;
+  Service, Characteristic: TSimpleBleUuid; Data: PByte;
+  DataLength: NativeUInt; UserData: Pointer); cdecl;
+var
+  I: SizeInt;
+begin
+  try
+    if (Data = nil) and (DataLength <> 0) then
+      raise Exception.Create('Native notification has a null buffer');
+    if DataLength > NativeUInt(High(SizeInt)) then
+      raise Exception.Create('Native notification is too large');
+    Write('Received[', DataLength, ']:');
+    for I := 0 to SizeInt(DataLength) - 1 do
+      Write(' ', IntToHex(Data[I], 2));
+    WriteLn();
+  except
+    on E: Exception do
+      WriteLn(StdErr, 'Notification callback: ', E.Message);
+  end;
+end;
+
 procedure Run;
 var
   Adapter: TSimpleBleAdapter;
@@ -82,8 +112,8 @@ var
   Error: TSimpleBleError;
   Service: TSimpleBleOwnedService;
   AdapterCount, ServiceCount: NativeUInt;
-  I, J, K, Selection: Integer;
-  Connected: Boolean;
+  I, J, Selection: Integer;
+  Connected, Subscribed: Boolean;
 begin
   if not LoadNativeLibraries then
     raise Exception.Create('Failed to load SimpleCBLE: ' +
@@ -92,6 +122,7 @@ begin
   Peripheral := nil;
   Error := nil;
   Connected := False;
+  Subscribed := False;
   try
     SimpleBlePinLibrary();
     AdapterCount := SimpleBleAdapterGetCount(Error);
@@ -133,25 +164,51 @@ begin
     CheckError(Error, 'service count');
     if ServiceCount > NativeUInt(High(Integer)) then
       raise Exception.Create('Too many services');
-    WriteLn('Connected. Services: ', ServiceCount);
+    WriteLn('Connected. Select a characteristic that supports notifications:');
     for I := 0 to Integer(ServiceCount) - 1 do
     begin
       Service := SimpleBleGetService(Peripheral, I, Error);
       CheckError(Error, 'service');
-      WriteLn('Service: ', string(Service.Uuid.Value),
-        ' (', Length(Service.Characteristics), ' characteristics)');
       for J := 0 to High(Service.Characteristics) do
       begin
-        WriteLn('  Characteristic: ',
-          string(Service.Characteristics[J].Uuid.Value));
-        for K := 0 to High(Service.Characteristics[J].Descriptors) do
-          WriteLn('    Descriptor: ',
-            string(Service.Characteristics[J].Descriptors[K].Value));
+        if not Service.Characteristics[J].CanNotify then
+          Continue;
+        if CharacteristicCount = MaxCharacteristics then
+          Break;
+        Characteristics[CharacteristicCount].Service := Service.Uuid;
+        Characteristics[CharacteristicCount].Characteristic :=
+          Service.Characteristics[J].Uuid;
+        WriteLn('[', CharacteristicCount, '] ', string(Service.Uuid.Value),
+          ' ', string(Service.Characteristics[J].Uuid.Value));
+        Inc(CharacteristicCount);
       end;
     end;
-    WriteLn('Press Enter to disconnect.');
-    ReadLn();
+    if CharacteristicCount = 0 then
+    begin
+      WriteLn('No notify-capable characteristics were found.');
+      Exit;
+    end;
+    Write('Select a characteristic: ');
+    ReadLn(Selection);
+    if (Selection < 0) or (Selection >= CharacteristicCount) then
+      raise Exception.Create('Invalid selection');
+    SimpleBlePeripheralNotify(Peripheral,
+      Characteristics[Selection].Service,
+      Characteristics[Selection].Characteristic, @OnNotify, nil, Error);
+    CheckError(Error, 'subscribe');
+    Subscribed := True;
+    WriteLn('Waiting for notifications for 5 seconds...');
+    Sleep(5000);
   finally
+    if Subscribed then
+    begin
+      SimpleBlePeripheralUnsubscribe(Peripheral,
+        Characteristics[Selection].Service,
+        Characteristics[Selection].Characteristic, Error);
+      if Error <> nil then
+        WriteLn(StdErr, 'Unsubscribe: ',
+          SimpleBleTakeErrorInfo(Error).Message);
+    end;
     if Connected then
     begin
       SimpleBlePeripheralDisconnect(Peripheral, Error);

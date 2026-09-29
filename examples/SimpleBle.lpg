@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectGroup FileVersion="2">
     <Targets>
-      <Target FileName="SimpleBleScanExample\SimpleBleScanExample.lpi">
+      <Target FileName="SimpleBleScan\SimpleBleScan.lpi">
         <BuildModes>
           <Mode Name="Debug"/>
           <Mode Name="Win64"/>
@@ -11,7 +11,7 @@
           <Mode Name="Linux32"/>
         </BuildModes>
       </Target>
-      <Target FileName="SimpleBleConnectExample\SimpleBleConnectExample.lpi">
+      <Target FileName="SimpleBleConnect\SimpleBleConnect.lpi">
         <BuildModes>
           <Mode Name="Debug" Compile="True"/>
           <Mode Name="Win64"/>
@@ -20,7 +20,7 @@
           <Mode Name="Linux32"/>
         </BuildModes>
       </Target>
-      <Target FileName="SimpleBleNotifyExample\SimpleBleNotifyExample.lpi">
+      <Target FileName="SimpleBleNotify\SimpleBleNotify.lpi">
         <BuildModes>
           <Mode Name="Debug" Compile="True"/>
           <Mode Name="Win64"/>

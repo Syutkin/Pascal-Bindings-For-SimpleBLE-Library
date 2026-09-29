@@ -11,7 +11,7 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="SimpleBleNotifyExample"/>
+      <Title Value="SimpleBleConnect"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -22,11 +22,11 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="bin\$(TargetOS)-$(TargetCPU)\SimpleBleNotifyExample"/>
+            <Filename Value="bin\$(TargetOS)-$(TargetCPU)\SimpleBleConnect"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="..\SimpleBleUnit"/>
+            <OtherUnitFiles Value="..\..\SimpleBleUnit"/>
             <UnitOutputDirectory Value="lib\$(TargetOS)-$(TargetCPU)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -49,11 +49,11 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="bin\$(TargetOS)-$(TargetCPU)\SimpleBleNotifyExample"/>
+            <Filename Value="bin\$(TargetOS)-$(TargetCPU)\SimpleBleConnect"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="..\SimpleBleUnit"/>
+            <OtherUnitFiles Value="..\..\SimpleBleUnit"/>
             <UnitOutputDirectory Value="lib\$(TargetOS)-$(TargetCPU)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -76,12 +76,11 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="bin\$(TargetOS)-$(TargetCPU)\SimpleBleNotifyExample"/>
+            <Filename Value="bin\$(TargetOS)-$(TargetCPU)\SimpleBleConnect"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <Libraries Value="bin\linux-x86_64"/>
-            <OtherUnitFiles Value="..\SimpleBleUnit"/>
+            <OtherUnitFiles Value="..\..\SimpleBleUnit"/>
             <UnitOutputDirectory Value="lib\$(TargetOS)-$(TargetCPU)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -108,11 +107,11 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="bin\$(TargetOS)-$(TargetCPU)\SimpleBleNotifyExample"/>
+            <Filename Value="bin\$(TargetOS)-$(TargetCPU)\SimpleBleConnect"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
-            <OtherUnitFiles Value="..\SimpleBleUnit"/>
+            <OtherUnitFiles Value="..\..\SimpleBleUnit"/>
             <UnitOutputDirectory Value="lib\$(TargetOS)-$(TargetCPU)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -144,11 +143,11 @@
     </RunParams>
     <Units Count="2">
       <Unit0>
-        <Filename Value="SimpleBleNotifyExample.lpr"/>
+        <Filename Value="SimpleBleConnect.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="..\SimpleBleUnit\simpleble.pas"/>
+        <Filename Value="..\..\SimpleBleUnit\simpleble.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="SimpleBle"/>
       </Unit1>
@@ -158,11 +157,11 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="bin\Debug\SimpleBleNotifyExample"/>
+      <Filename Value="bin\Debug\SimpleBleConnect"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="..\SimpleBleUnit"/>
+      <OtherUnitFiles Value="..\..\SimpleBleUnit"/>
       <UnitOutputDirectory Value="lib\Debug"/>
     </SearchPaths>
     <Linking>
