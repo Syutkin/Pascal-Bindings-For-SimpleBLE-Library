@@ -42,10 +42,8 @@ scanning, connections and GATT, local peripherals, configuration, logging, and
 errors. Platform-specific advanced functions use conditional declarations.
 This is a direct C binding, so applications manage native handles and errors.
 
-The package, examples, and automated ABI tests were built and tested with Free
-Pascal 3.2.2 on Linux x86_64. All three examples were also run with real BLE
-hardware. Windows, macOS, and other architectures have not been verified for
-this version.
+The bindings have been tested with real BLE hardware on Linux x86_64 and
+Windows 10.
 
 ## Examples
 The original SimpleBLE project comes with three C examples, which have been ported to Lazarus:
