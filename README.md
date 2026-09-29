@@ -1,8 +1,8 @@
 # Pascal Bindings For SimpleBLE Library
 These are Lazarus/FreePascal bindings for the SimpleBLE cross-platform Bluetooth LE (BLE) library.
 
-Current Pascal bindings release: **v1.1.0**, targeting the SimpleBLE/SimpleCBLE
-1.1.0 ABI.
+Current Pascal bindings source version: **1.2.0**, targeting the
+SimpleBLE/SimpleCBLE 1.2.0 C ABI. The loader rejects other native ABI versions.
 
 ## SimpleBLE
 SimpleBLE is a cross-platform native Bluetooth Low Energy library. SimpleCBLE
@@ -30,15 +30,22 @@ have been released. A backend that uses adapters or callbacks should call
 keeps the native libraries mapped until process termination, while
 `SimpleBleUnloadLibrary` still clears the resolved Pascal API pointers.
 
-Pascal bindings release v1.1.0 targets the SimpleCBLE 1.1.0 ABI and requires:
+The bindings target the SimpleCBLE 1.2.0 ABI and require:
 
 * `SimpleBleUnit/simpleble.pas`: the Pascal declarations and dynamic loader;
 * `simplecble.dll`, `libsimplecble.so`, or `libsimplecble.dylib`: the C ABI;
 * `simpleble.dll`, `libsimpleble.so`, or `libsimpleble.dylib`: the native
   implementation used by SimpleCBLE.
 
-Release v1.1.0 has been built and tested with Lazarus 4.8 and Free Pascal
-3.2.2 on Linux x86_64. The current fork has not yet been verified on Windows.
+The `SimpleBle` unit exposes the public SimpleCBLE 1.2.0 API: adapters and
+scanning, connections and GATT, local peripherals, configuration, logging, and
+errors. Platform-specific advanced functions use conditional declarations.
+This is a direct C binding, so applications manage native handles and errors.
+
+The package, examples, and automated ABI tests were built and tested with Free
+Pascal 3.2.2 on Linux x86_64. All three examples were also run with real BLE
+hardware. Windows, macOS, and other architectures have not been verified for
+this version.
 
 ## Examples
 The original SimpleBLE project comes with three C examples, which have been ported to Lazarus:
@@ -88,7 +95,7 @@ callback code in an already unloaded SimpleCBLE library. Pinning cannot be
 reversed during the process lifetime; the operating system releases the
 libraries when the process exits. With static linking the call is a no-op.
 
-### Memory Ownership (SimpleCBLE 1.2.0)
+### Memory Ownership
 
 - Free returned strings and read buffers with `SimpleBleFree`; the version
   string and callback data are borrowed and must not be freed.
@@ -103,23 +110,16 @@ libraries when the process exits. With static linking the call is a no-op.
 
 ## Tests
 
-The native loader tests do not require a BLE adapter. Point
-`SIMPLECBLE_LIBRARY_DIR` to a directory containing both shared libraries:
+The ABI, loader, callback, and ownership tests do not require a BLE adapter.
+Place matching 1.2.0 native libraries and headers in `shared/`, then run:
 
 ```sh
-lazbuild --ws=qt6 tests/simpleblebindingstests.lpi
-SIMPLECBLE_LIBRARY_DIR=/path/to/libraries \
-  tests/bin/simpleblebindingstests --all --format=plain
+tests/run-abi-tests.sh
 ```
 
-The checked-in C oracle prints the platform ABI used by the Pascal layout
-tests:
-
-```sh
-cc -std=c11 -Wall -Wextra -Werror -Ishared/include \
-  tests/simplecbleabioracle.c -o tests/bin/simplecbleabioracle
-tests/bin/simplecbleabioracle
-```
+The script builds the C oracle and fixture with the 1.2.0 headers, runs the
+Pascal suite against the native libraries and fixture, and runs the separate
+ownership test. It is currently intended for Linux x86_64.
 
 ## Package Builds
 
@@ -138,14 +138,23 @@ lazbuild --ws=qt6 simpleblepascal.lpk
 
 ## Building the SimpleBLE Shared Libraries
 This repository does not vendor the SimpleBLE source tree or native binaries.
-Obtain the native SimpleBLE and SimpleCBLE 1.1.0 artifacts from the
-[official v1.1.0 release](https://github.com/simpleble/simpleble/releases/tag/v1.1.0),
-or build the pinned `v1.1.0` tag using the upstream instructions. Do not build
-an unpinned `main` branch for this bindings release.
+Obtain matching native SimpleBLE and SimpleCBLE 1.2.0 artifacts from the
+[official v1.2.0 release](https://github.com/simpleble/simpleble/releases/tag/v1.2.0),
+or build the pinned `v1.2.0` tag using the upstream instructions. The Linux
+x86_64 `libsimplecble_linux-x64.zip` asset contains both libraries and headers.
+Its SHA-256 is
+`e3b4b6360cc5d286c44fc168111850548eaa5fcfab811df1f7fe76bcecf6c9ff`.
+Verify the archive before extracting it, then put both libraries in the same
+directory and pass that directory to `SimpleBleLoadLibrary`. Do not mix native
+files from different releases.
 
 Keep `simpleble` and `simplecble` from the same release and architecture.
-Before redistributing native binaries, retain their native license notices and
-confirm that the SimpleBLE licensing terms permit the intended distribution.
+The Pascal source package does not include the native binaries. The native
+SimpleBLE project has separate
+[BUSL-1.1/commercial terms](https://github.com/simpleble/simpleble/blob/v1.2.0/LICENSE.md).
+Before redistributing native binaries, review that version's license terms
+and include the applicable license notices. The Pascal MIT license does not
+cover those binaries.
 
 ## Contributing
 

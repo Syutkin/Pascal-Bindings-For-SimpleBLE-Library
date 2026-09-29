@@ -1,9 +1,19 @@
 # Changelog
 
-All notable changes to this project are documented in this file.
+## [1.2.0] - Unreleased
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### Changed
+
+- Updated the C declarations and dynamic loader for the SimpleBLE/SimpleCBLE
+  1.2.0 ABI. The loader rejects incompatible native versions before other ABI
+  calls.
+- Updated all three console examples to handle `out_error` and release native
+  resources after use.
+
+### Added
+
+- Added Pascal-owned copies for services, manufacturer data, read buffers and
+  errors, plus hardware-free ABI, callback and ownership tests.
 
 ## [1.1.0] - 2026-08-12
 
@@ -39,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added Lazarus and FPC package metadata for the SimpleCBLE 1.0.0 bindings.
 
+[1.2.0]: https://github.com/Syutkin/Pascal-Bindings-For-SimpleBLE-Library/compare/v1.1.0...HEAD
 [1.1.0]: https://github.com/Syutkin/Pascal-Bindings-For-SimpleBLE-Library/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/Syutkin/Pascal-Bindings-For-SimpleBLE-Library/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/Syutkin/Pascal-Bindings-For-SimpleBLE-Library/compare/v1.0.0...v1.0.1

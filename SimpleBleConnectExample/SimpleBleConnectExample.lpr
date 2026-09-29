@@ -2,304 +2,190 @@ program SimpleBleConnectExample;
 
 {$mode objfpc}{$H+}
 
-{ Lazarus / Free Pascal BLE connect example for SimpleBLE library.
-
-  The original example is Copyright (c) 2022 Erik Lins.
-    https://github.com/eriklins/Pascal-Bindings-For-SimpleBLE-Library
-
-  Modifications are Copyright (c) 2026 Andrey Syutkin.
-    https://github.com/Syutkin/Pascal-Bindings-For-SimpleBLE-Library
-
-  The example and modifications are released under the MIT License.
-
-  This example is a port of the C connect example in SimpleBLE to Lazarus/FreePascal.
-    https://github.com/simpleble/simpleble/tree/main/examples/simpleble/c/connect
-
-  The native SimpleBLE library has its own BUSL-1.1/commercial licensing terms.
-    https://github.com/simpleble/simpleble
-}
-
-{$UNDEF DYNAMIC_LOADING}
-{$IFDEF WINDOWS}
-  //{$DEFINE DYNAMIC_LOADING}    { UNCOMMENT IF YOU WANT DYNAMIC LOADING }
-{$ENDIF}
+{ Copyright (c) 2022 Erik Lins; modifications Copyright (c) 2026 Andrey Syutkin.
+  MIT license. Native SimpleBLE has separate BUSL-1.1/commercial terms. }
 
 uses
-  {$IFDEF UNIX}
-  cthreads,
-  {$ENDIF}
-  Classes, SysUtils, CustApp, SimpleBle;
+  {$IFDEF UNIX}cthreads,{$ENDIF}
+  SysUtils, SimpleBle;
 
-type
+const
+  MaxPeripherals = 10;
 
-  { TSimpleBleConnectExample }
-
-  TSimpleBleConnectExample = class(TCustomApplication)
-  protected
-    procedure DoRun; override;
-  public
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure WriteHelp; virtual;
-  end;
+var
+  Peripherals: array[0..MaxPeripherals - 1] of TSimpleBlePeripheral;
+  PeripheralCount: Integer = 0;
 
 function LoadNativeLibraries: Boolean;
 var
-  LibraryDirectory: string;
+  Directory: string;
 begin
-  LibraryDirectory := GetEnvironmentVariable('SIMPLECBLE_LIBRARY_DIR');
-  if LibraryDirectory <> '' then
-  begin
-    Result := SimpleBleLoadLibrary(LibraryDirectory);
-    if Result then
-      Exit;
-  end;
-
-  Result := SimpleBleLoadLibrary(ExtractFilePath(ParamStr(0)));
-  if Result then
-    Exit;
-
+  Directory := GetEnvironmentVariable('SIMPLECBLE_LIBRARY_DIR');
+  if (Directory <> '') and SimpleBleLoadLibrary(Directory) then
+    Exit(True);
+  if SimpleBleLoadLibrary(ExtractFilePath(ParamStr(0))) then
+    Exit(True);
   Result := SimpleBleLoadLibrary();
 end;
 
-const
-  PERIPHERAL_LIST_SIZE = 10;
-
+procedure CheckError(var Error: TSimpleBleError; const Operation: string);
 var
-  PeripheralList: array [0..PERIPHERAL_LIST_SIZE-1] of TSimpleBlePeripheral;
-  PeripheralListLen: Integer = 0;
-  Adapter: TSimpleBleAdapter = nil;
-
-
-{ Callback functions for SimpleBLE }
-
-procedure AdapterOnScanStart(Adapter: TSimpleBleAdapter; Userdata: Pointer); cdecl;
-var
-  Identifier: PChar;
+  Info: TSimpleBleErrorInfo;
 begin
-  Identifier := SimpleBleAdapterIdentifier(Adapter);
+  if Error = nil then
+    Exit;
+  Info := SimpleBleTakeErrorInfo(Error);
+  raise Exception.CreateFmt('%s: %d %s',
+    [Operation, Ord(Info.Code), Info.Message]);
+end;
+
+procedure OnScanFound(Adapter: TSimpleBleAdapter;
+  Peripheral: TSimpleBlePeripheral; UserData: Pointer); cdecl;
+begin
+  { Each callback transfers an owned peripheral handle. }
+  if PeripheralCount < MaxPeripherals then
+  begin
+    Peripherals[PeripheralCount] := Peripheral;
+    Inc(PeripheralCount);
+  end
+  else
+    SimpleBlePeripheralReleaseHandle(Peripheral);
+end;
+
+procedure PrintPeripheral(Peripheral: TSimpleBlePeripheral;
+  const Prefix: string);
+var
+  Identifier, Address: PChar;
+  Error: TSimpleBleError;
+begin
+  Identifier := nil;
+  Address := nil;
+  Error := nil;
   try
-    if Identifier = nil then
-      Exit;
-    WriteLn('Adapter ' + Identifier + ' started scanning.');
+    Identifier := SimpleBlePeripheralIdentifier(Peripheral, Error);
+    CheckError(Error, 'peripheral identifier');
+    Address := SimpleBlePeripheralAddress(Peripheral, Error);
+    CheckError(Error, 'peripheral address');
+    WriteLn(Prefix + string(Identifier) + ' [' + string(Address) + ']');
   finally
+    if Error <> nil then
+      SimpleBleErrorRelease(Error);
     SimpleBleFree(Identifier);
+    SimpleBleFree(Address);
   end;
 end;
 
-procedure AdapterOnScanStop(Adapter: TSimpleBleAdapter; Userdata: Pointer); cdecl;
+procedure Run;
 var
-  Identifier: PChar;
-begin
-  Identifier := SimpleBleAdapterIdentifier(Adapter);
-  try
-    if Identifier = nil then
-      Exit;
-    WriteLn('Adapter ' + Identifier + ' stopped scanning.');
-  finally
-    SimpleBleFree(Identifier);
-  end;
-end;
-
-procedure AdapterOnScanFound(Adapter: TSimpleBleAdapter; Peripheral: TSimpleBlePeripheral; Userdata: Pointer); cdecl;
-var
-  AdapterIdentifier: PChar;
-  PeripheralIdentifier: PChar;
-  PeripheralAddress: PChar;
-  Stored: Boolean;
-begin
-  AdapterIdentifier := nil;
-  PeripheralIdentifier := nil;
-  PeripheralAddress := nil;
-  Stored := False;
-  try
-    AdapterIdentifier := SimpleBleAdapterIdentifier(Adapter);
-    PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
-    PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
-    if (AdapterIdentifier = nil) or (PeripheralIdentifier = nil) or
-      (PeripheralAddress = nil) then
-      Exit;
-    WriteLn('Adapter ' + AdapterIdentifier + ' found device: ' +
-      PeripheralIdentifier + ' [' + PeripheralAddress + ']');
-    if PeripheralListLen < PERIPHERAL_LIST_SIZE then
-    begin
-      PeripheralList[PeripheralListLen] := Peripheral;
-      Inc(PeripheralListLen);
-      Stored := True;
-    end;
-  finally
-    if not Stored then
-      SimpleBlePeripheralReleaseHandle(Peripheral);
-    SimpleBleFree(AdapterIdentifier);
-    SimpleBleFree(PeripheralIdentifier);
-    SimpleBleFree(PeripheralAddress);
-  end;
-end;
-
-{ -------------------------------- }
-
-
-procedure TSimpleBleConnectExample.DoRun;
-var
-  ErrorMsg: String;
-  ErrCode: TSimpleBleErr = SIMPLEBLE_SUCCESS;
-  i, j, k, Selection, ServicesCount: Integer;
+  Adapter: TSimpleBleAdapter;
   Peripheral: TSimpleBlePeripheral;
-  PeripheralIdentifier: PChar;
-  PeripheralAddress: PChar;
-  Service: TSimpleBleService;
+  Error: TSimpleBleError;
+  Service: TSimpleBleOwnedService;
+  AdapterCount, ServiceCount: NativeUInt;
+  I, J, K, Selection: Integer;
+  Connected: Boolean;
 begin
-
-  if not LoadNativeLibraries() then begin
-    WriteLn('Failed to load library: ' + SimpleBleGetLastLoadError());
-    Terminate;
-    Exit;
-  end;
-
-  // quick check parameters
-  ErrorMsg:=CheckOptions('h', 'help');
-  if ErrorMsg<>'' then begin
-    ShowException(Exception.Create(ErrorMsg));
-    Terminate;
-    Exit;
-  end;
-
-  // parse parameters
-  if HasOption('h', 'help') then begin
-    WriteHelp;
-    Terminate;
-    Exit;
-  end;
-
-  // look for BLE adapters
-  if SimpleBleAdapterGetCount() = 0 then
-  begin
-    WriteLn('No BLE adapter was found.');
-    Terminate;
-    Exit;
-  end;
-
-  // get a handle for the BLE Adapter
-  Adapter := SimpleBleAdapterGetHandle(0);
-  if Adapter = nil then
-  begin
-    WriteLn('Could not get handle for BLE adapter.');
-    Terminate;
-    Exit
-  end;
-  WriteLn('Found BLE adapter and got handle.');
-
-  // register SimpleBLE scan callback functions
-  SimpleBleAdapterSetCallbackOnScanStart(Adapter, @AdapterOnScanStart, Nil);
-  SimpleBleAdapterSetCallbackOnScanStop(Adapter, @AdapterOnScanStop, Nil);
-  SimpleBleAdapterSetCallbackOnScanFound(Adapter, @AdapterOnScanFound, Nil);
-
-  // start BLE scanning for 5 seconds
-  SimpleBleAdapterScanFor(Adapter, 5000);
-
-  // show list of found devices
-  WriteLn('The following devices were found:');
-  for i := 0 to (PeripheralListLen - 1) do
-  begin
-    Peripheral := PeripheralList[i];
-    PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
-    PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
-    WriteLn('[' + IntToStr(i) + '] ' + PeripheralIdentifier + ' [' + PeripheralAddress + ']');
-    SimpleBleFree(PeripheralIdentifier);
-    SimpleBleFree(PeripheralAddress);
-  end;
-
-  // select a device to connect to
-  Selection := -1;
-  write('Please select a device to connect to: ');
-  ReadLn(Selection);
-  if (Selection < 0) or (Selection >= PeripheralListLen) then
-  begin
-    WriteLn('Invalid selection.');
-    Terminate;
-    Exit;
-  end;
-
-  // connect to device
-  Peripheral := PeripheralList[Selection];
-  PeripheralIdentifier := SimpleBlePeripheralIdentifier(Peripheral);
-  PeripheralAddress := SimpleBlePeripheralAddress(Peripheral);
-  WriteLn('Connecting to ' + PeripheralIdentifier + ' [' + PeripheralAddress + ']');
-  SimpleBleFree(PeripheralIdentifier);
-  SimpleBleFree(PeripheralAddress);
-  ErrCode := SimpleBlePeripheralConnect(Peripheral);
-  if ErrCode <> SIMPLEBLE_SUCCESS then
-  begin
-    WriteLn('Failed to connect.');
-    Terminate;
-    Exit;
-  end;
-  ServicesCount := SimpleBlePeripheralServicesCount(Peripheral);
-  WriteLn('Successfully connected, listing ' + IntToStr(ServicesCount) + ' services.');
-
-  // show gatt table with services and characteristics
-  for i := 0 to (ServicesCount - 1) do
-  begin
-    Service := Default(TSimpleBleService);
-    ErrCode := SimpleBlePeripheralServicesGet(Peripheral, i, Service);
-    if ErrCode <> SIMPLEBLE_SUCCESS then
+  if not LoadNativeLibraries then
+    raise Exception.Create('Failed to load SimpleCBLE: ' +
+      SimpleBleGetLastLoadError());
+  Adapter := nil;
+  Peripheral := nil;
+  Error := nil;
+  Connected := False;
+  try
+    SimpleBlePinLibrary();
+    AdapterCount := SimpleBleAdapterGetCount(Error);
+    CheckError(Error, 'adapter count');
+    if AdapterCount = 0 then
     begin
-      WriteLn('Failed to get service.');
-      Terminate;
+      WriteLn('No BLE adapter was found.');
       Exit;
     end;
-    WriteLn('Service: ' + Service.Uuid.Value + ' - (' + IntToStr(Service.CharacteristicCount) + ')');
-    for j := 0 to Integer(Service.CharacteristicCount) - 1 do
+    Adapter := SimpleBleAdapterGetHandle(0, Error);
+    CheckError(Error, 'adapter handle');
+    if Adapter = nil then
+      raise Exception.Create('Could not get a BLE adapter handle');
+    SimpleBleAdapterSetCallbackOnScanFound(Adapter, @OnScanFound, nil);
+    WriteLn('Scanning for 5 seconds...');
+    SimpleBleAdapterScanFor(Adapter, 5000, Error);
+    CheckError(Error, 'scan');
+    SimpleBleAdapterSetCallbackOnScanFound(Adapter, nil, nil);
+
+    if PeripheralCount = 0 then
     begin
-      WriteLn('  Characteristic: ' + Service.Characteristics[j].Uuid.Value + ' - (' + IntToStr(Service.Characteristics[j].DescriptorCount) + ')');
-      for k := 0 to Integer(Service.Characteristics[j].DescriptorCount) - 1 do
-        WriteLn('    Descriptor: ' + Service.Characteristics[j].Descriptors[k].Uuid.Value);
+      WriteLn('No peripherals were found.');
+      Exit;
+    end;
+    for I := 0 to PeripheralCount - 1 do
+      PrintPeripheral(Peripherals[I], '[' + IntToStr(I) + '] ');
+    Write('Select a peripheral: ');
+    ReadLn(Selection);
+    if (Selection < 0) or (Selection >= PeripheralCount) then
+      raise Exception.Create('Invalid selection');
+
+    Peripheral := Peripherals[Selection];
+    PrintPeripheral(Peripheral, 'Connecting to ');
+    SimpleBlePeripheralConnect(Peripheral, Error);
+    CheckError(Error, 'connect');
+    Connected := True;
+
+    ServiceCount := SimpleBlePeripheralServicesCount(Peripheral, Error);
+    CheckError(Error, 'service count');
+    if ServiceCount > NativeUInt(High(Integer)) then
+      raise Exception.Create('Too many services');
+    WriteLn('Connected. Services: ', ServiceCount);
+    for I := 0 to Integer(ServiceCount) - 1 do
+    begin
+      Service := SimpleBleGetService(Peripheral, I, Error);
+      CheckError(Error, 'service');
+      WriteLn('Service: ', string(Service.Uuid.Value),
+        ' (', Length(Service.Characteristics), ' characteristics)');
+      for J := 0 to High(Service.Characteristics) do
+      begin
+        WriteLn('  Characteristic: ',
+          string(Service.Characteristics[J].Uuid.Value));
+        for K := 0 to High(Service.Characteristics[J].Descriptors) do
+          WriteLn('    Descriptor: ',
+            string(Service.Characteristics[J].Descriptors[K].Value));
+      end;
+    end;
+    WriteLn('Press Enter to disconnect.');
+    ReadLn();
+  finally
+    if Connected then
+    begin
+      SimpleBlePeripheralDisconnect(Peripheral, Error);
+      if Error <> nil then
+      begin
+        WriteLn(StdErr, 'Disconnect: ',
+          SimpleBleTakeErrorInfo(Error).Message);
+      end;
+    end;
+    if Error <> nil then
+      SimpleBleErrorRelease(Error);
+    if Adapter <> nil then
+      SimpleBleAdapterSetCallbackOnScanFound(Adapter, nil, nil);
+    for I := 0 to PeripheralCount - 1 do
+      SimpleBlePeripheralReleaseHandle(Peripherals[I]);
+    if Adapter <> nil then
+      SimpleBleAdapterReleaseHandle(Adapter);
+    SimpleBleUnloadLibrary();
+  end;
+end;
+
+begin
+  if (ParamCount > 0) and ((ParamStr(1) = '-h') or (ParamStr(1) = '--help')) then
+  begin
+    WriteLn('Usage: ', ExtractFileName(ParamStr(0)));
+    Halt(0);
+  end;
+  try
+    Run;
+  except
+    on E: Exception do
+    begin
+      WriteLn(StdErr, E.Message);
+      ExitCode := 1;
     end;
   end;
-
-  // wait for enter
-  ReadLn();
-
-  // and disconnect again from device
-  SimpleBlePeripheralDisconnect(Peripheral);
-
-  // stop program loop
-  Terminate;
-end;
-
-constructor TSimpleBleConnectExample.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  StopOnException:=True;
-end;
-
-destructor TSimpleBleConnectExample.Destroy;
-var
-  i: Integer;
-begin
-  WriteLn('Releasing allocated resources.');
-  // Release all saved peripherals
-  for i := 0 to (PeripheralListLen - 1) do
-    SimpleBlePeripheralReleaseHandle(PeripheralList[i]);
-  // Let's not forget to release the associated handle.
-  if Adapter <> nil then
-    SimpleBleAdapterReleaseHandle(Adapter);
-  SimpleBleUnloadLibrary();
-  inherited Destroy;
-end;
-
-procedure TSimpleBleConnectExample.WriteHelp;
-begin
-  { add your help code here }
-  WriteLn('Usage: ', ExeName, ' -h');
-end;
-
-
-var
-  Application: TSimpleBleConnectExample;
-begin
-  Application:=TSimpleBleConnectExample.Create(nil);
-  Application.Title:='SimpleBleScanTest';
-  Application.Run;
-  Application.Free;
 end.
