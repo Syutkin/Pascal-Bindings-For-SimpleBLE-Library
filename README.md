@@ -101,8 +101,6 @@ libraries when the process exits. With static linking the call is a no-op.
   removing callbacks and subscriptions. Copy notification data before the
   callback returns if it is needed later.
 
-The new helpers require the pending 1.2.0 loader update.
-
 ## Tests
 
 The native loader tests do not require a BLE adapter. Point

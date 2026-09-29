@@ -805,382 +805,1129 @@ var
 { Clear the pointers to the functions and procedures }
 procedure ClearPointers;
 begin
-  { functions from SimpleBLE adapter.h }
-  pointer(SimpleBleAdapterIsBluetoothEnabled) := Nil;
-  pointer(SimpleBleAdapterGetCount) := Nil;
-  pointer(SimpleBleAdapterGetHandle) := Nil;
-  pointer(SimpleBleAdapterReleaseHandle) := Nil;
-  pointer(SimpleBleAdapterUnderlying) := Nil;
-  pointer(SimpleBleAdapterIdentifier) := Nil;
-  pointer(SimpleBleAdapterAddress) := Nil;
-  pointer(SimpleBleAdapterPowerOn) := Nil;
-  pointer(SimpleBleAdapterPowerOff) := Nil;
-  pointer(SimpleBleAdapterIsPowered) := Nil;
-  pointer(SimpleBleAdapterSetCallbackOnPowerOn) := Nil;
-  pointer(SimpleBleAdapterSetCallbackOnPowerOff) := Nil;
-  pointer(SimpleBleAdapterScanStart) := Nil;
-  pointer(SimpleBleAdapterScanStop) := Nil;
-  pointer(SimpleBleAdapterScanIsActive) := Nil;
-  pointer(SimpleBleAdapterScanFor) := Nil;
-  pointer(SimpleBleAdapterScanGetResultsCount) := Nil;
-  pointer(SimpleBleAdapterScanGetResultsHandle) := Nil;
-  pointer(SimpleBleAdapterGetPairedPeripheralsCount) := Nil;
-  pointer(SimpleBleAdapterGetPairedPeripheralsHandle) := Nil;
-  pointer(SimpleBleAdapterGetConnectedPeripheralsCount) := Nil;
-  pointer(SimpleBleAdapterGetConnectedPeripheralsHandle) := Nil;
-  pointer(SimpleBleAdapterSetCallbackOnScanStart) := Nil;
-  pointer(SimpleBleAdapterSetCallbackOnScanStop) := Nil;
-  pointer(SimpleBleAdapterSetCallbackOnScanUpdated) := Nil;
-  pointer(SimpleBleAdapterSetCallbackOnScanFound) := Nil;
-
-  { functions from SimpleBLE peripheral.h }
-  pointer(SimpleBlePeripheralReleaseHandle) := Nil;
-  pointer(SimpleBlePeripheralUnderlying) := Nil;
-  pointer(SimpleBlePeripheralIdentifier) := Nil;
-  pointer(SimpleBlePeripheralAddress) := Nil;
-  pointer(SimpleBlePeripheralAddressType) := Nil;
-  pointer(SimpleBlePeripheralRssi) := Nil;
-  pointer(SimpleBlePeripheralTxPower) := Nil;
-  pointer(SimpleBlePeripheralMtu) := Nil;
-  pointer(SimpleBlePeripheralConnect) := Nil;
-  pointer(SimpleBlePeripheralDisconnect) := Nil;
-  pointer(SimpleBlePeripheralIsConnected) := Nil;
-  pointer(SimpleBlePeripheralIsConnectable) := Nil;
-  pointer(SimpleBlePeripheralIsPaired) := Nil;
-  pointer(SimpleBlePeripheralUnpair) := Nil;
-  pointer(SimpleBlePeripheralServicesCount) := Nil;
-  pointer(SimpleBlePeripheralServicesGet) := Nil;
-  pointer(SimpleBlePeripheralManufacturerDataCount) := Nil;
-  pointer(SimpleBlePeripheralManufacturerDataGet) := Nil;
-  pointer(SimpleBlePeripheralRead) := Nil;
-  pointer(SimpleBlePeripheralWriteRequest) := Nil;
-  pointer(SimpleBlePeripheralWriteCommand) := Nil;
-  pointer(SimpleBlePeripheralNotify) := Nil;
-  pointer(SimpleBlePeripheralIndicate) := Nil;
-  pointer(SimpleBlePeripheralUnsubscribe) := Nil;
-  pointer(SimpleBlePeripheralReadDescriptor) := Nil;
-  pointer(SimpleBlePeripheralWriteDescriptor) := Nil;
-  pointer(SimpleBlePeripheralSetCallbackOnConnected) := Nil;
-  pointer(SimpleBlePeripheralSetCallbackOnDisconnected) := Nil;
-
-  { functions from SimpleBLE simpleble.h }
-  pointer(SimpleBleFree) := Nil;
-
-  { functions from SimpleBLE logging.h }
-  pointer(SimpleBleLoggingSetLevel) := Nil;
-  pointer(SimpleBleLoggingSetCallback) := Nil;
-  pointer(SimpleBleLoggingGetLevel) := Nil;
-  pointer(SimpleBleLoggingHasCallback) := Nil;
-  pointer(SimpleBleLoggingLogDefaultStdout) := Nil;
-  pointer(SimpleBleLoggingLogDefaultFile) := Nil;
-  pointer(SimpleBleLoggingLogDefaultFilePath) := Nil;
-
-  { functions from SimpleBLE config.h }
-  pointer(SimpleBleConfigResetAll) := Nil;
-  pointer(SimpleBleConfigSimpleBluezReset) := Nil;
-  pointer(SimpleBleConfigSimpleBluezGetUseSystemBus) := Nil;
-  pointer(SimpleBleConfigSimpleBluezSetUseSystemBus) := Nil;
-  pointer(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs) := Nil;
-  pointer(SimpleBleConfigSimpleBluezSetConnectionTimeoutMs) := Nil;
-  pointer(SimpleBleConfigSimpleBluezGetDisconnectionTimeoutMs) := Nil;
-  pointer(SimpleBleConfigSimpleBluezSetDisconnectionTimeoutMs) := Nil;
-  pointer(SimpleBleConfigWinRtReset) := Nil;
-  pointer(SimpleBleConfigWinRtGetExperimentalUseOwnMtaApartment) := Nil;
-  pointer(SimpleBleConfigWinRtSetExperimentalUseOwnMtaApartment) := Nil;
-  pointer(SimpleBleConfigWinRtGetExperimentalReinitializeWinRtApartmentOnMainThread) := Nil;
-  pointer(SimpleBleConfigWinRtSetExperimentalReinitializeWinRtApartmentOnMainThread) := Nil;
-  pointer(SimpleBleConfigWinRtGetUseDeferredDisconnect) := Nil;
-  pointer(SimpleBleConfigWinRtSetUseDeferredDisconnect) := Nil;
-  pointer(SimpleBleConfigCoreBluetoothReset) := Nil;
-  pointer(SimpleBleConfigAndroidReset) := Nil;
-  pointer(SimpleBleConfigAndroidGetConnectionPriority) := Nil;
-  pointer(SimpleBleConfigAndroidSetConnectionPriority) := Nil;
-  pointer(SimpleBleConfigSetAndroidConnectionPriority) := Nil;
-  pointer(SimpleBleConfigDonglReset) := Nil;
-  pointer(SimpleBleConfigDonglGetUseDonglBackend) := Nil;
-  pointer(SimpleBleConfigDonglSetUseDonglBackend) := Nil;
-  pointer(SimpleBleConfigDonglGetAutoUpdate) := Nil;
-  pointer(SimpleBleConfigDonglSetAutoUpdate) := Nil;
-  pointer(SimpleBleConfigDonglGetForceUpdate) := Nil;
-  pointer(SimpleBleConfigDonglSetForceUpdate) := Nil;
-
-  { functions from SimpleBLE utils.h }
-  pointer(SimpleBleGetOperatingSystem) := Nil;
-  pointer(SimpleBleGetVersion) := Nil;
-  
+  Pointer(SimpleBleAdapterIsBluetoothEnabled) := nil;
+  Pointer(SimpleBleAdapterGetCount) := nil;
+  Pointer(SimpleBleAdapterGetHandle) := nil;
+  Pointer(SimpleBleAdapterReleaseHandle) := nil;
+  Pointer(SimpleBleAdapterUnderlying) := nil;
+  Pointer(SimpleBleAdapterIdentifier) := nil;
+  Pointer(SimpleBleAdapterAddress) := nil;
+  Pointer(SimpleBleAdapterPowerOn) := nil;
+  Pointer(SimpleBleAdapterPowerOff) := nil;
+  Pointer(SimpleBleAdapterIsPowered) := nil;
+  Pointer(SimpleBleAdapterSetCallbackOnPowerOn) := nil;
+  Pointer(SimpleBleAdapterSetCallbackOnPowerOff) := nil;
+  Pointer(SimpleBleAdapterScanStart) := nil;
+  Pointer(SimpleBleAdapterScanStop) := nil;
+  Pointer(SimpleBleAdapterScanIsActive) := nil;
+  Pointer(SimpleBleAdapterScanFor) := nil;
+  Pointer(SimpleBleAdapterScanGetResultsCount) := nil;
+  Pointer(SimpleBleAdapterScanGetResultsHandle) := nil;
+  Pointer(SimpleBleAdapterGetPairedPeripheralsCount) := nil;
+  Pointer(SimpleBleAdapterGetPairedPeripheralsHandle) := nil;
+  Pointer(SimpleBleAdapterGetConnectedPeripheralsCount) := nil;
+  Pointer(SimpleBleAdapterGetConnectedPeripheralsHandle) := nil;
+  Pointer(SimpleBleAdapterSetCallbackOnScanStart) := nil;
+  Pointer(SimpleBleAdapterSetCallbackOnScanStop) := nil;
+  Pointer(SimpleBleAdapterSetCallbackOnScanUpdated) := nil;
+  Pointer(SimpleBleAdapterSetCallbackOnScanFound) := nil;
+  Pointer(SimpleBleAdapterCreateLocalPeripheral) := nil;
+  Pointer(SimpleBleAdvancedDonglSetPasskeyRequestCallback) := nil;
+  Pointer(SimpleBleAdvancedDonglSetPasskeyDisplayCallback) := nil;
+  Pointer(SimpleBleAdvancedDonglSetNumericComparisonCallback) := nil;
+  {$IFDEF LINUX}
+  {$IFNDEF ANDROID}
+  Pointer(SimpleBleAdvancedLinuxSetAdvertisementLocalName) := nil;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF DARWIN}
+  {$IFNDEF IOS}
+  Pointer(SimpleBleAdvancedMacosSetAdvertisementLocalName) := nil;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF DARWIN}
+  {$IFNDEF IOS}
+  Pointer(SimpleBleAdvancedMacosRetrieveCachedPeripheral) := nil;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF DARWIN}
+  {$IFDEF IOS}
+  Pointer(SimpleBleAdvancedIosSetAdvertisementLocalName) := nil;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF DARWIN}
+  {$IFDEF IOS}
+  Pointer(SimpleBleAdvancedIosRetrieveCachedPeripheral) := nil;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF ANDROID}
+  Pointer(SimpleBleAdvancedAndroidGetJvm) := nil;
+  {$ENDIF}
+  {$IFDEF ANDROID}
+  Pointer(SimpleBleAdvancedAndroidSetJvm) := nil;
+  {$ENDIF}
+  {$IFDEF ANDROID}
+  Pointer(SimpleBleAdvancedAndroidSetContext) := nil;
+  {$ENDIF}
+  Pointer(SimpleBleBackendGetCount) := nil;
+  Pointer(SimpleBleBackendGetHandle) := nil;
+  Pointer(SimpleBleBackendReleaseHandle) := nil;
+  Pointer(SimpleBleBackendIdentifier) := nil;
+  Pointer(SimpleBleBackendIsBluetoothEnabled) := nil;
+  Pointer(SimpleBleBackendGetAdaptersCount) := nil;
+  Pointer(SimpleBleBackendGetAdaptersHandle) := nil;
+  Pointer(SimpleBleConfigResetAll) := nil;
+  Pointer(SimpleBleConfigSimpleBluezReset) := nil;
+  Pointer(SimpleBleConfigSimpleBluezGetUseSystemBus) := nil;
+  Pointer(SimpleBleConfigSimpleBluezSetUseSystemBus) := nil;
+  Pointer(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs) := nil;
+  Pointer(SimpleBleConfigSimpleBluezSetConnectionTimeoutMs) := nil;
+  Pointer(SimpleBleConfigSimpleBluezGetDisconnectionTimeoutMs) := nil;
+  Pointer(SimpleBleConfigSimpleBluezSetDisconnectionTimeoutMs) := nil;
+  Pointer(SimpleBleConfigWinRtReset) := nil;
+  Pointer(SimpleBleConfigWinRtGetExperimentalUseOwnMtaApartment) := nil;
+  Pointer(SimpleBleConfigWinRtSetExperimentalUseOwnMtaApartment) := nil;
+  Pointer(SimpleBleConfigWinRtGetExperimentalReinitializeWinRtApartmentOnMainThread) := nil;
+  Pointer(SimpleBleConfigWinRtSetExperimentalReinitializeWinRtApartmentOnMainThread) := nil;
+  Pointer(SimpleBleConfigWinRtGetUseDeferredDisconnect) := nil;
+  Pointer(SimpleBleConfigWinRtSetUseDeferredDisconnect) := nil;
+  Pointer(SimpleBleConfigCoreBluetoothReset) := nil;
+  Pointer(SimpleBleConfigAndroidReset) := nil;
+  Pointer(SimpleBleConfigAndroidGetConnectionPriority) := nil;
+  Pointer(SimpleBleConfigAndroidSetConnectionPriority) := nil;
+  Pointer(SimpleBleConfigSetAndroidConnectionPriority) := nil;
+  Pointer(SimpleBleConfigDonglReset) := nil;
+  Pointer(SimpleBleConfigDonglGetUseDonglBackend) := nil;
+  Pointer(SimpleBleConfigDonglSetUseDonglBackend) := nil;
+  Pointer(SimpleBleConfigDonglGetAutoUpdate) := nil;
+  Pointer(SimpleBleConfigDonglSetAutoUpdate) := nil;
+  Pointer(SimpleBleConfigDonglGetForceUpdate) := nil;
+  Pointer(SimpleBleConfigDonglSetForceUpdate) := nil;
+  Pointer(SimpleBleErrorCode) := nil;
+  Pointer(SimpleBleErrorMessage) := nil;
+  Pointer(SimpleBleErrorRelease) := nil;
+  Pointer(SimpleBleLocalCharacteristicReleaseHandle) := nil;
+  Pointer(SimpleBleLocalCharacteristicUuid) := nil;
+  Pointer(SimpleBleLocalCharacteristicCapabilities) := nil;
+  Pointer(SimpleBleLocalCharacteristicValue) := nil;
+  Pointer(SimpleBleLocalCharacteristicSetValue) := nil;
+  Pointer(SimpleBleLocalCharacteristicSetCallbackOnRead) := nil;
+  Pointer(SimpleBleLocalCharacteristicSetCallbackOnWrite) := nil;
+  Pointer(SimpleBleLocalCharacteristicSetCallbackOnSubscribed) := nil;
+  Pointer(SimpleBleLocalCharacteristicSetCallbackOnUnsubscribed) := nil;
+  Pointer(SimpleBleLocalPeripheralReleaseHandle) := nil;
+  Pointer(SimpleBleLocalPeripheralUnderlying) := nil;
+  Pointer(SimpleBleLocalPeripheralAddAdvertisedService) := nil;
+  Pointer(SimpleBleLocalPeripheralAddService) := nil;
+  Pointer(SimpleBleLocalPeripheralServicesCount) := nil;
+  Pointer(SimpleBleLocalPeripheralServicesGet) := nil;
+  Pointer(SimpleBleLocalPeripheralRemoveAllServices) := nil;
+  Pointer(SimpleBleLocalPeripheralStart) := nil;
+  Pointer(SimpleBleLocalPeripheralStop) := nil;
+  Pointer(SimpleBleLocalPeripheralIsStarted) := nil;
+  Pointer(SimpleBleLocalPeripheralIsAdvertising) := nil;
+  Pointer(SimpleBleLocalPeripheralSetCallbackOnClientConnected) := nil;
+  Pointer(SimpleBleLocalPeripheralSetCallbackOnClientDisconnected) := nil;
+  Pointer(SimpleBleLocalServiceReleaseHandle) := nil;
+  Pointer(SimpleBleLocalServiceCharacteristicsCount) := nil;
+  Pointer(SimpleBleLocalServiceCharacteristicsGet) := nil;
+  Pointer(SimpleBleLocalServiceUuid) := nil;
+  Pointer(SimpleBleLocalServiceAddCharacteristic) := nil;
+  Pointer(SimpleBleLoggingSetLevel) := nil;
+  Pointer(SimpleBleLoggingGetLevel) := nil;
+  Pointer(SimpleBleLoggingSetCallback) := nil;
+  Pointer(SimpleBleLoggingHasCallback) := nil;
+  Pointer(SimpleBleLoggingLogDefaultStdout) := nil;
+  Pointer(SimpleBleLoggingLogDefaultFile) := nil;
+  Pointer(SimpleBleLoggingLogDefaultFilePath) := nil;
+  Pointer(SimpleBlePeripheralReleaseHandle) := nil;
+  Pointer(SimpleBlePeripheralUnderlying) := nil;
+  Pointer(SimpleBlePeripheralIdentifier) := nil;
+  Pointer(SimpleBlePeripheralAddress) := nil;
+  Pointer(SimpleBlePeripheralAddressType) := nil;
+  Pointer(SimpleBlePeripheralRssi) := nil;
+  Pointer(SimpleBlePeripheralTxPower) := nil;
+  Pointer(SimpleBlePeripheralMtu) := nil;
+  Pointer(SimpleBlePeripheralConnect) := nil;
+  Pointer(SimpleBlePeripheralDisconnect) := nil;
+  Pointer(SimpleBlePeripheralIsConnected) := nil;
+  Pointer(SimpleBlePeripheralIsConnectable) := nil;
+  Pointer(SimpleBlePeripheralIsPaired) := nil;
+  Pointer(SimpleBlePeripheralUnpair) := nil;
+  Pointer(SimpleBlePeripheralServicesCount) := nil;
+  Pointer(SimpleBlePeripheralServicesGet) := nil;
+  Pointer(SimpleBleServiceRelease) := nil;
+  Pointer(SimpleBlePeripheralManufacturerDataCount) := nil;
+  Pointer(SimpleBlePeripheralManufacturerDataGet) := nil;
+  Pointer(SimpleBleManufacturerDataRelease) := nil;
+  Pointer(SimpleBlePeripheralRead) := nil;
+  Pointer(SimpleBlePeripheralWriteRequest) := nil;
+  Pointer(SimpleBlePeripheralWriteCommand) := nil;
+  Pointer(SimpleBlePeripheralNotify) := nil;
+  Pointer(SimpleBlePeripheralIndicate) := nil;
+  Pointer(SimpleBlePeripheralUnsubscribe) := nil;
+  Pointer(SimpleBlePeripheralReadDescriptor) := nil;
+  Pointer(SimpleBlePeripheralWriteDescriptor) := nil;
+  Pointer(SimpleBlePeripheralSetCallbackOnConnected) := nil;
+  Pointer(SimpleBlePeripheralSetCallbackOnDisconnected) := nil;
+  Pointer(SimpleBleGetOperatingSystem) := nil;
+  Pointer(SimpleBleGetVersion) := nil;
+  Pointer(SimpleBleFree) := nil;
 end;
 
+function ResolveRequiredSymbols: Boolean;
+begin
+  Result := False;
+  Pointer(SimpleBleAdapterIsBluetoothEnabled) := GetProcedureAddress(hLib, 'simpleble_adapter_is_bluetooth_enabled');
+  if Pointer(SimpleBleAdapterIsBluetoothEnabled) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_is_bluetooth_enabled';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterGetCount) := GetProcedureAddress(hLib, 'simpleble_adapter_get_count');
+  if Pointer(SimpleBleAdapterGetCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_get_count';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterGetHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_get_handle');
+  if Pointer(SimpleBleAdapterGetHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_get_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterReleaseHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_release_handle');
+  if Pointer(SimpleBleAdapterReleaseHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_release_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterUnderlying) := GetProcedureAddress(hLib, 'simpleble_adapter_underlying');
+  if Pointer(SimpleBleAdapterUnderlying) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_underlying';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterIdentifier) := GetProcedureAddress(hLib, 'simpleble_adapter_identifier');
+  if Pointer(SimpleBleAdapterIdentifier) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_identifier';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterAddress) := GetProcedureAddress(hLib, 'simpleble_adapter_address');
+  if Pointer(SimpleBleAdapterAddress) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_address';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterPowerOn) := GetProcedureAddress(hLib, 'simpleble_adapter_power_on');
+  if Pointer(SimpleBleAdapterPowerOn) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_power_on';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterPowerOff) := GetProcedureAddress(hLib, 'simpleble_adapter_power_off');
+  if Pointer(SimpleBleAdapterPowerOff) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_power_off';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterIsPowered) := GetProcedureAddress(hLib, 'simpleble_adapter_is_powered');
+  if Pointer(SimpleBleAdapterIsPowered) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_is_powered';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterSetCallbackOnPowerOn) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_power_on');
+  if Pointer(SimpleBleAdapterSetCallbackOnPowerOn) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_set_callback_on_power_on';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterSetCallbackOnPowerOff) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_power_off');
+  if Pointer(SimpleBleAdapterSetCallbackOnPowerOff) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_set_callback_on_power_off';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterScanStart) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_start');
+  if Pointer(SimpleBleAdapterScanStart) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_scan_start';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterScanStop) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_stop');
+  if Pointer(SimpleBleAdapterScanStop) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_scan_stop';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterScanIsActive) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_is_active');
+  if Pointer(SimpleBleAdapterScanIsActive) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_scan_is_active';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterScanFor) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_for');
+  if Pointer(SimpleBleAdapterScanFor) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_scan_for';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterScanGetResultsCount) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_get_results_count');
+  if Pointer(SimpleBleAdapterScanGetResultsCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_scan_get_results_count';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterScanGetResultsHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_get_results_handle');
+  if Pointer(SimpleBleAdapterScanGetResultsHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_scan_get_results_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterGetPairedPeripheralsCount) := GetProcedureAddress(hLib, 'simpleble_adapter_get_paired_peripherals_count');
+  if Pointer(SimpleBleAdapterGetPairedPeripheralsCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_get_paired_peripherals_count';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterGetPairedPeripheralsHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_get_paired_peripherals_handle');
+  if Pointer(SimpleBleAdapterGetPairedPeripheralsHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_get_paired_peripherals_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterGetConnectedPeripheralsCount) := GetProcedureAddress(hLib, 'simpleble_adapter_get_connected_peripherals_count');
+  if Pointer(SimpleBleAdapterGetConnectedPeripheralsCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_get_connected_peripherals_count';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterGetConnectedPeripheralsHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_get_connected_peripherals_handle');
+  if Pointer(SimpleBleAdapterGetConnectedPeripheralsHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_get_connected_peripherals_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterSetCallbackOnScanStart) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_scan_start');
+  if Pointer(SimpleBleAdapterSetCallbackOnScanStart) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_set_callback_on_scan_start';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterSetCallbackOnScanStop) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_scan_stop');
+  if Pointer(SimpleBleAdapterSetCallbackOnScanStop) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_set_callback_on_scan_stop';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterSetCallbackOnScanUpdated) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_scan_updated');
+  if Pointer(SimpleBleAdapterSetCallbackOnScanUpdated) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_set_callback_on_scan_updated';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterSetCallbackOnScanFound) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_scan_found');
+  if Pointer(SimpleBleAdapterSetCallbackOnScanFound) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_set_callback_on_scan_found';
+    Exit;
+  end;
+  Pointer(SimpleBleAdapterCreateLocalPeripheral) := GetProcedureAddress(hLib, 'simpleble_adapter_create_local_peripheral');
+  if Pointer(SimpleBleAdapterCreateLocalPeripheral) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_adapter_create_local_peripheral';
+    Exit;
+  end;
+  Pointer(SimpleBleAdvancedDonglSetPasskeyRequestCallback) := GetProcedureAddress(hLib, 'simpleble_advanced_dongl_set_passkey_request_callback');
+  if Pointer(SimpleBleAdvancedDonglSetPasskeyRequestCallback) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_dongl_set_passkey_request_callback';
+    Exit;
+  end;
+  Pointer(SimpleBleAdvancedDonglSetPasskeyDisplayCallback) := GetProcedureAddress(hLib, 'simpleble_advanced_dongl_set_passkey_display_callback');
+  if Pointer(SimpleBleAdvancedDonglSetPasskeyDisplayCallback) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_dongl_set_passkey_display_callback';
+    Exit;
+  end;
+  Pointer(SimpleBleAdvancedDonglSetNumericComparisonCallback) := GetProcedureAddress(hLib, 'simpleble_advanced_dongl_set_numeric_comparison_callback');
+  if Pointer(SimpleBleAdvancedDonglSetNumericComparisonCallback) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_dongl_set_numeric_comparison_callback';
+    Exit;
+  end;
+  {$IFDEF LINUX}
+  {$IFNDEF ANDROID}
+  Pointer(SimpleBleAdvancedLinuxSetAdvertisementLocalName) := GetProcedureAddress(hLib, 'simpleble_advanced_linux_set_advertisement_local_name');
+  if Pointer(SimpleBleAdvancedLinuxSetAdvertisementLocalName) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_linux_set_advertisement_local_name';
+    Exit;
+  end;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF DARWIN}
+  {$IFNDEF IOS}
+  Pointer(SimpleBleAdvancedMacosSetAdvertisementLocalName) := GetProcedureAddress(hLib, 'simpleble_advanced_macos_set_advertisement_local_name');
+  if Pointer(SimpleBleAdvancedMacosSetAdvertisementLocalName) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_macos_set_advertisement_local_name';
+    Exit;
+  end;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF DARWIN}
+  {$IFNDEF IOS}
+  Pointer(SimpleBleAdvancedMacosRetrieveCachedPeripheral) := GetProcedureAddress(hLib, 'simpleble_advanced_macos_retrieve_cached_peripheral');
+  if Pointer(SimpleBleAdvancedMacosRetrieveCachedPeripheral) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_macos_retrieve_cached_peripheral';
+    Exit;
+  end;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF DARWIN}
+  {$IFDEF IOS}
+  Pointer(SimpleBleAdvancedIosSetAdvertisementLocalName) := GetProcedureAddress(hLib, 'simpleble_advanced_ios_set_advertisement_local_name');
+  if Pointer(SimpleBleAdvancedIosSetAdvertisementLocalName) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_ios_set_advertisement_local_name';
+    Exit;
+  end;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF DARWIN}
+  {$IFDEF IOS}
+  Pointer(SimpleBleAdvancedIosRetrieveCachedPeripheral) := GetProcedureAddress(hLib, 'simpleble_advanced_ios_retrieve_cached_peripheral');
+  if Pointer(SimpleBleAdvancedIosRetrieveCachedPeripheral) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_ios_retrieve_cached_peripheral';
+    Exit;
+  end;
+  {$ENDIF}
+  {$ENDIF}
+  {$IFDEF ANDROID}
+  Pointer(SimpleBleAdvancedAndroidGetJvm) := GetProcedureAddress(hLib, 'simpleble_advanced_android_get_jvm');
+  if Pointer(SimpleBleAdvancedAndroidGetJvm) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_android_get_jvm';
+    Exit;
+  end;
+  {$ENDIF}
+  {$IFDEF ANDROID}
+  Pointer(SimpleBleAdvancedAndroidSetJvm) := GetProcedureAddress(hLib, 'simpleble_advanced_android_set_jvm');
+  if Pointer(SimpleBleAdvancedAndroidSetJvm) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_android_set_jvm';
+    Exit;
+  end;
+  {$ENDIF}
+  {$IFDEF ANDROID}
+  Pointer(SimpleBleAdvancedAndroidSetContext) := GetProcedureAddress(hLib, 'simpleble_advanced_android_set_context');
+  if Pointer(SimpleBleAdvancedAndroidSetContext) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_advanced_android_set_context';
+    Exit;
+  end;
+  {$ENDIF}
+  Pointer(SimpleBleBackendGetCount) := GetProcedureAddress(hLib, 'simpleble_backend_get_count');
+  if Pointer(SimpleBleBackendGetCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_backend_get_count';
+    Exit;
+  end;
+  Pointer(SimpleBleBackendGetHandle) := GetProcedureAddress(hLib, 'simpleble_backend_get_handle');
+  if Pointer(SimpleBleBackendGetHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_backend_get_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleBackendReleaseHandle) := GetProcedureAddress(hLib, 'simpleble_backend_release_handle');
+  if Pointer(SimpleBleBackendReleaseHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_backend_release_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleBackendIdentifier) := GetProcedureAddress(hLib, 'simpleble_backend_identifier');
+  if Pointer(SimpleBleBackendIdentifier) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_backend_identifier';
+    Exit;
+  end;
+  Pointer(SimpleBleBackendIsBluetoothEnabled) := GetProcedureAddress(hLib, 'simpleble_backend_is_bluetooth_enabled');
+  if Pointer(SimpleBleBackendIsBluetoothEnabled) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_backend_is_bluetooth_enabled';
+    Exit;
+  end;
+  Pointer(SimpleBleBackendGetAdaptersCount) := GetProcedureAddress(hLib, 'simpleble_backend_get_adapters_count');
+  if Pointer(SimpleBleBackendGetAdaptersCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_backend_get_adapters_count';
+    Exit;
+  end;
+  Pointer(SimpleBleBackendGetAdaptersHandle) := GetProcedureAddress(hLib, 'simpleble_backend_get_adapters_handle');
+  if Pointer(SimpleBleBackendGetAdaptersHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_backend_get_adapters_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigResetAll) := GetProcedureAddress(hLib, 'simpleble_config_reset_all');
+  if Pointer(SimpleBleConfigResetAll) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_reset_all';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigSimpleBluezReset) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_reset');
+  if Pointer(SimpleBleConfigSimpleBluezReset) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_simplebluez_reset';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigSimpleBluezGetUseSystemBus) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_get_use_system_bus');
+  if Pointer(SimpleBleConfigSimpleBluezGetUseSystemBus) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_simplebluez_get_use_system_bus';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigSimpleBluezSetUseSystemBus) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_set_use_system_bus');
+  if Pointer(SimpleBleConfigSimpleBluezSetUseSystemBus) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_simplebluez_set_use_system_bus';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_get_connection_timeout_ms');
+  if Pointer(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_simplebluez_get_connection_timeout_ms';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigSimpleBluezSetConnectionTimeoutMs) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_set_connection_timeout_ms');
+  if Pointer(SimpleBleConfigSimpleBluezSetConnectionTimeoutMs) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_simplebluez_set_connection_timeout_ms';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigSimpleBluezGetDisconnectionTimeoutMs) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_get_disconnection_timeout_ms');
+  if Pointer(SimpleBleConfigSimpleBluezGetDisconnectionTimeoutMs) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_simplebluez_get_disconnection_timeout_ms';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigSimpleBluezSetDisconnectionTimeoutMs) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_set_disconnection_timeout_ms');
+  if Pointer(SimpleBleConfigSimpleBluezSetDisconnectionTimeoutMs) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_simplebluez_set_disconnection_timeout_ms';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigWinRtReset) := GetProcedureAddress(hLib, 'simpleble_config_winrt_reset');
+  if Pointer(SimpleBleConfigWinRtReset) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_winrt_reset';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigWinRtGetExperimentalUseOwnMtaApartment) := GetProcedureAddress(hLib, 'simpleble_config_winrt_get_experimental_use_own_mta_apartment');
+  if Pointer(SimpleBleConfigWinRtGetExperimentalUseOwnMtaApartment) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_winrt_get_experimental_use_own_mta_apartment';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigWinRtSetExperimentalUseOwnMtaApartment) := GetProcedureAddress(hLib, 'simpleble_config_winrt_set_experimental_use_own_mta_apartment');
+  if Pointer(SimpleBleConfigWinRtSetExperimentalUseOwnMtaApartment) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_winrt_set_experimental_use_own_mta_apartment';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigWinRtGetExperimentalReinitializeWinRtApartmentOnMainThread) := GetProcedureAddress(hLib, 'simpleble_config_winrt_get_experimental_reinitialize_winrt_apartment_on_main_thread');
+  if Pointer(SimpleBleConfigWinRtGetExperimentalReinitializeWinRtApartmentOnMainThread) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_winrt_get_experimental_reinitialize_winrt_apartment_on_main_thread';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigWinRtSetExperimentalReinitializeWinRtApartmentOnMainThread) := GetProcedureAddress(hLib, 'simpleble_config_winrt_set_experimental_reinitialize_winrt_apartment_on_main_thread');
+  if Pointer(SimpleBleConfigWinRtSetExperimentalReinitializeWinRtApartmentOnMainThread) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_winrt_set_experimental_reinitialize_winrt_apartment_on_main_thread';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigWinRtGetUseDeferredDisconnect) := GetProcedureAddress(hLib, 'simpleble_config_winrt_get_use_deferred_disconnect');
+  if Pointer(SimpleBleConfigWinRtGetUseDeferredDisconnect) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_winrt_get_use_deferred_disconnect';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigWinRtSetUseDeferredDisconnect) := GetProcedureAddress(hLib, 'simpleble_config_winrt_set_use_deferred_disconnect');
+  if Pointer(SimpleBleConfigWinRtSetUseDeferredDisconnect) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_winrt_set_use_deferred_disconnect';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigCoreBluetoothReset) := GetProcedureAddress(hLib, 'simpleble_config_corebluetooth_reset');
+  if Pointer(SimpleBleConfigCoreBluetoothReset) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_corebluetooth_reset';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigAndroidReset) := GetProcedureAddress(hLib, 'simpleble_config_android_reset');
+  if Pointer(SimpleBleConfigAndroidReset) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_android_reset';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigAndroidGetConnectionPriority) := GetProcedureAddress(hLib, 'simpleble_config_android_get_connection_priority');
+  if Pointer(SimpleBleConfigAndroidGetConnectionPriority) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_android_get_connection_priority';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigAndroidSetConnectionPriority) := GetProcedureAddress(hLib, 'simpleble_config_android_set_connection_priority');
+  if Pointer(SimpleBleConfigAndroidSetConnectionPriority) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_android_set_connection_priority';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigSetAndroidConnectionPriority) := GetProcedureAddress(hLib, 'simpleble_config_set_android_connection_priority');
+  if Pointer(SimpleBleConfigSetAndroidConnectionPriority) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_set_android_connection_priority';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigDonglReset) := GetProcedureAddress(hLib, 'simpleble_config_dongl_reset');
+  if Pointer(SimpleBleConfigDonglReset) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_dongl_reset';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigDonglGetUseDonglBackend) := GetProcedureAddress(hLib, 'simpleble_config_dongl_get_use_dongl_backend');
+  if Pointer(SimpleBleConfigDonglGetUseDonglBackend) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_dongl_get_use_dongl_backend';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigDonglSetUseDonglBackend) := GetProcedureAddress(hLib, 'simpleble_config_dongl_set_use_dongl_backend');
+  if Pointer(SimpleBleConfigDonglSetUseDonglBackend) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_dongl_set_use_dongl_backend';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigDonglGetAutoUpdate) := GetProcedureAddress(hLib, 'simpleble_config_dongl_get_auto_update');
+  if Pointer(SimpleBleConfigDonglGetAutoUpdate) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_dongl_get_auto_update';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigDonglSetAutoUpdate) := GetProcedureAddress(hLib, 'simpleble_config_dongl_set_auto_update');
+  if Pointer(SimpleBleConfigDonglSetAutoUpdate) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_dongl_set_auto_update';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigDonglGetForceUpdate) := GetProcedureAddress(hLib, 'simpleble_config_dongl_get_force_update');
+  if Pointer(SimpleBleConfigDonglGetForceUpdate) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_dongl_get_force_update';
+    Exit;
+  end;
+  Pointer(SimpleBleConfigDonglSetForceUpdate) := GetProcedureAddress(hLib, 'simpleble_config_dongl_set_force_update');
+  if Pointer(SimpleBleConfigDonglSetForceUpdate) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_config_dongl_set_force_update';
+    Exit;
+  end;
+  Pointer(SimpleBleErrorCode) := GetProcedureAddress(hLib, 'simpleble_error_code');
+  if Pointer(SimpleBleErrorCode) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_error_code';
+    Exit;
+  end;
+  Pointer(SimpleBleErrorMessage) := GetProcedureAddress(hLib, 'simpleble_error_message');
+  if Pointer(SimpleBleErrorMessage) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_error_message';
+    Exit;
+  end;
+  Pointer(SimpleBleErrorRelease) := GetProcedureAddress(hLib, 'simpleble_error_release');
+  if Pointer(SimpleBleErrorRelease) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_error_release';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalCharacteristicReleaseHandle) := GetProcedureAddress(hLib, 'simpleble_local_characteristic_release_handle');
+  if Pointer(SimpleBleLocalCharacteristicReleaseHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_characteristic_release_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalCharacteristicUuid) := GetProcedureAddress(hLib, 'simpleble_local_characteristic_uuid');
+  if Pointer(SimpleBleLocalCharacteristicUuid) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_characteristic_uuid';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalCharacteristicCapabilities) := GetProcedureAddress(hLib, 'simpleble_local_characteristic_capabilities');
+  if Pointer(SimpleBleLocalCharacteristicCapabilities) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_characteristic_capabilities';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalCharacteristicValue) := GetProcedureAddress(hLib, 'simpleble_local_characteristic_value');
+  if Pointer(SimpleBleLocalCharacteristicValue) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_characteristic_value';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalCharacteristicSetValue) := GetProcedureAddress(hLib, 'simpleble_local_characteristic_set_value');
+  if Pointer(SimpleBleLocalCharacteristicSetValue) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_characteristic_set_value';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalCharacteristicSetCallbackOnRead) := GetProcedureAddress(hLib, 'simpleble_local_characteristic_set_callback_on_read');
+  if Pointer(SimpleBleLocalCharacteristicSetCallbackOnRead) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_characteristic_set_callback_on_read';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalCharacteristicSetCallbackOnWrite) := GetProcedureAddress(hLib, 'simpleble_local_characteristic_set_callback_on_write');
+  if Pointer(SimpleBleLocalCharacteristicSetCallbackOnWrite) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_characteristic_set_callback_on_write';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalCharacteristicSetCallbackOnSubscribed) := GetProcedureAddress(hLib, 'simpleble_local_characteristic_set_callback_on_subscribed');
+  if Pointer(SimpleBleLocalCharacteristicSetCallbackOnSubscribed) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_characteristic_set_callback_on_subscribed';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalCharacteristicSetCallbackOnUnsubscribed) := GetProcedureAddress(hLib, 'simpleble_local_characteristic_set_callback_on_unsubscribed');
+  if Pointer(SimpleBleLocalCharacteristicSetCallbackOnUnsubscribed) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_characteristic_set_callback_on_unsubscribed';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralReleaseHandle) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_release_handle');
+  if Pointer(SimpleBleLocalPeripheralReleaseHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_release_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralUnderlying) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_underlying');
+  if Pointer(SimpleBleLocalPeripheralUnderlying) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_underlying';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralAddAdvertisedService) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_add_advertised_service');
+  if Pointer(SimpleBleLocalPeripheralAddAdvertisedService) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_add_advertised_service';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralAddService) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_add_service');
+  if Pointer(SimpleBleLocalPeripheralAddService) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_add_service';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralServicesCount) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_services_count');
+  if Pointer(SimpleBleLocalPeripheralServicesCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_services_count';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralServicesGet) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_services_get');
+  if Pointer(SimpleBleLocalPeripheralServicesGet) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_services_get';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralRemoveAllServices) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_remove_all_services');
+  if Pointer(SimpleBleLocalPeripheralRemoveAllServices) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_remove_all_services';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralStart) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_start');
+  if Pointer(SimpleBleLocalPeripheralStart) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_start';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralStop) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_stop');
+  if Pointer(SimpleBleLocalPeripheralStop) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_stop';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralIsStarted) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_is_started');
+  if Pointer(SimpleBleLocalPeripheralIsStarted) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_is_started';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralIsAdvertising) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_is_advertising');
+  if Pointer(SimpleBleLocalPeripheralIsAdvertising) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_is_advertising';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralSetCallbackOnClientConnected) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_set_callback_on_client_connected');
+  if Pointer(SimpleBleLocalPeripheralSetCallbackOnClientConnected) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_set_callback_on_client_connected';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalPeripheralSetCallbackOnClientDisconnected) := GetProcedureAddress(hLib, 'simpleble_local_peripheral_set_callback_on_client_disconnected');
+  if Pointer(SimpleBleLocalPeripheralSetCallbackOnClientDisconnected) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_peripheral_set_callback_on_client_disconnected';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalServiceReleaseHandle) := GetProcedureAddress(hLib, 'simpleble_local_service_release_handle');
+  if Pointer(SimpleBleLocalServiceReleaseHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_service_release_handle';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalServiceCharacteristicsCount) := GetProcedureAddress(hLib, 'simpleble_local_service_characteristics_count');
+  if Pointer(SimpleBleLocalServiceCharacteristicsCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_service_characteristics_count';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalServiceCharacteristicsGet) := GetProcedureAddress(hLib, 'simpleble_local_service_characteristics_get');
+  if Pointer(SimpleBleLocalServiceCharacteristicsGet) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_service_characteristics_get';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalServiceUuid) := GetProcedureAddress(hLib, 'simpleble_local_service_uuid');
+  if Pointer(SimpleBleLocalServiceUuid) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_service_uuid';
+    Exit;
+  end;
+  Pointer(SimpleBleLocalServiceAddCharacteristic) := GetProcedureAddress(hLib, 'simpleble_local_service_add_characteristic');
+  if Pointer(SimpleBleLocalServiceAddCharacteristic) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_local_service_add_characteristic';
+    Exit;
+  end;
+  Pointer(SimpleBleLoggingSetLevel) := GetProcedureAddress(hLib, 'simpleble_logging_set_level');
+  if Pointer(SimpleBleLoggingSetLevel) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_logging_set_level';
+    Exit;
+  end;
+  Pointer(SimpleBleLoggingGetLevel) := GetProcedureAddress(hLib, 'simpleble_logging_get_level');
+  if Pointer(SimpleBleLoggingGetLevel) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_logging_get_level';
+    Exit;
+  end;
+  Pointer(SimpleBleLoggingSetCallback) := GetProcedureAddress(hLib, 'simpleble_logging_set_callback');
+  if Pointer(SimpleBleLoggingSetCallback) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_logging_set_callback';
+    Exit;
+  end;
+  Pointer(SimpleBleLoggingHasCallback) := GetProcedureAddress(hLib, 'simpleble_logging_has_callback');
+  if Pointer(SimpleBleLoggingHasCallback) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_logging_has_callback';
+    Exit;
+  end;
+  Pointer(SimpleBleLoggingLogDefaultStdout) := GetProcedureAddress(hLib, 'simpleble_logging_log_default_stdout');
+  if Pointer(SimpleBleLoggingLogDefaultStdout) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_logging_log_default_stdout';
+    Exit;
+  end;
+  Pointer(SimpleBleLoggingLogDefaultFile) := GetProcedureAddress(hLib, 'simpleble_logging_log_default_file');
+  if Pointer(SimpleBleLoggingLogDefaultFile) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_logging_log_default_file';
+    Exit;
+  end;
+  Pointer(SimpleBleLoggingLogDefaultFilePath) := GetProcedureAddress(hLib, 'simpleble_logging_log_default_file_path');
+  if Pointer(SimpleBleLoggingLogDefaultFilePath) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_logging_log_default_file_path';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralReleaseHandle) := GetProcedureAddress(hLib, 'simpleble_peripheral_release_handle');
+  if Pointer(SimpleBlePeripheralReleaseHandle) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_release_handle';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralUnderlying) := GetProcedureAddress(hLib, 'simpleble_peripheral_underlying');
+  if Pointer(SimpleBlePeripheralUnderlying) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_underlying';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralIdentifier) := GetProcedureAddress(hLib, 'simpleble_peripheral_identifier');
+  if Pointer(SimpleBlePeripheralIdentifier) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_identifier';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralAddress) := GetProcedureAddress(hLib, 'simpleble_peripheral_address');
+  if Pointer(SimpleBlePeripheralAddress) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_address';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralAddressType) := GetProcedureAddress(hLib, 'simpleble_peripheral_address_type');
+  if Pointer(SimpleBlePeripheralAddressType) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_address_type';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralRssi) := GetProcedureAddress(hLib, 'simpleble_peripheral_rssi');
+  if Pointer(SimpleBlePeripheralRssi) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_rssi';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralTxPower) := GetProcedureAddress(hLib, 'simpleble_peripheral_tx_power');
+  if Pointer(SimpleBlePeripheralTxPower) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_tx_power';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralMtu) := GetProcedureAddress(hLib, 'simpleble_peripheral_mtu');
+  if Pointer(SimpleBlePeripheralMtu) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_mtu';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralConnect) := GetProcedureAddress(hLib, 'simpleble_peripheral_connect');
+  if Pointer(SimpleBlePeripheralConnect) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_connect';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralDisconnect) := GetProcedureAddress(hLib, 'simpleble_peripheral_disconnect');
+  if Pointer(SimpleBlePeripheralDisconnect) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_disconnect';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralIsConnected) := GetProcedureAddress(hLib, 'simpleble_peripheral_is_connected');
+  if Pointer(SimpleBlePeripheralIsConnected) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_is_connected';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralIsConnectable) := GetProcedureAddress(hLib, 'simpleble_peripheral_is_connectable');
+  if Pointer(SimpleBlePeripheralIsConnectable) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_is_connectable';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralIsPaired) := GetProcedureAddress(hLib, 'simpleble_peripheral_is_paired');
+  if Pointer(SimpleBlePeripheralIsPaired) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_is_paired';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralUnpair) := GetProcedureAddress(hLib, 'simpleble_peripheral_unpair');
+  if Pointer(SimpleBlePeripheralUnpair) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_unpair';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralServicesCount) := GetProcedureAddress(hLib, 'simpleble_peripheral_services_count');
+  if Pointer(SimpleBlePeripheralServicesCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_services_count';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralServicesGet) := GetProcedureAddress(hLib, 'simpleble_peripheral_services_get');
+  if Pointer(SimpleBlePeripheralServicesGet) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_services_get';
+    Exit;
+  end;
+  Pointer(SimpleBleServiceRelease) := GetProcedureAddress(hLib, 'simpleble_service_release');
+  if Pointer(SimpleBleServiceRelease) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_service_release';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralManufacturerDataCount) := GetProcedureAddress(hLib, 'simpleble_peripheral_manufacturer_data_count');
+  if Pointer(SimpleBlePeripheralManufacturerDataCount) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_manufacturer_data_count';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralManufacturerDataGet) := GetProcedureAddress(hLib, 'simpleble_peripheral_manufacturer_data_get');
+  if Pointer(SimpleBlePeripheralManufacturerDataGet) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_manufacturer_data_get';
+    Exit;
+  end;
+  Pointer(SimpleBleManufacturerDataRelease) := GetProcedureAddress(hLib, 'simpleble_manufacturer_data_release');
+  if Pointer(SimpleBleManufacturerDataRelease) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_manufacturer_data_release';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralRead) := GetProcedureAddress(hLib, 'simpleble_peripheral_read');
+  if Pointer(SimpleBlePeripheralRead) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_read';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralWriteRequest) := GetProcedureAddress(hLib, 'simpleble_peripheral_write_request');
+  if Pointer(SimpleBlePeripheralWriteRequest) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_write_request';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralWriteCommand) := GetProcedureAddress(hLib, 'simpleble_peripheral_write_command');
+  if Pointer(SimpleBlePeripheralWriteCommand) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_write_command';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralNotify) := GetProcedureAddress(hLib, 'simpleble_peripheral_notify');
+  if Pointer(SimpleBlePeripheralNotify) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_notify';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralIndicate) := GetProcedureAddress(hLib, 'simpleble_peripheral_indicate');
+  if Pointer(SimpleBlePeripheralIndicate) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_indicate';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralUnsubscribe) := GetProcedureAddress(hLib, 'simpleble_peripheral_unsubscribe');
+  if Pointer(SimpleBlePeripheralUnsubscribe) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_unsubscribe';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralReadDescriptor) := GetProcedureAddress(hLib, 'simpleble_peripheral_read_descriptor');
+  if Pointer(SimpleBlePeripheralReadDescriptor) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_read_descriptor';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralWriteDescriptor) := GetProcedureAddress(hLib, 'simpleble_peripheral_write_descriptor');
+  if Pointer(SimpleBlePeripheralWriteDescriptor) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_write_descriptor';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralSetCallbackOnConnected) := GetProcedureAddress(hLib, 'simpleble_peripheral_set_callback_on_connected');
+  if Pointer(SimpleBlePeripheralSetCallbackOnConnected) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_set_callback_on_connected';
+    Exit;
+  end;
+  Pointer(SimpleBlePeripheralSetCallbackOnDisconnected) := GetProcedureAddress(hLib, 'simpleble_peripheral_set_callback_on_disconnected');
+  if Pointer(SimpleBlePeripheralSetCallbackOnDisconnected) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_peripheral_set_callback_on_disconnected';
+    Exit;
+  end;
+  Pointer(SimpleBleGetOperatingSystem) := GetProcedureAddress(hLib, 'simpleble_get_operating_system');
+  if Pointer(SimpleBleGetOperatingSystem) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_get_operating_system';
+    Exit;
+  end;
+  Pointer(SimpleBleFree) := GetProcedureAddress(hLib, 'simpleble_free');
+  if Pointer(SimpleBleFree) = nil then
+  begin
+    LastLoadError := 'SimpleCBLE 1.2.0 is missing required symbol: simpleble_free';
+    Exit;
+  end;
+  Result := True;
+end;
 
-{ Load the DLL file with an optional path specified }
-function SimpleBleLoadLibrary(dllPath:string=''): Boolean;
+function SimpleBleLoadLibrary(dllPath: string = ''): Boolean;
+var
+  CorePath: string;
+  ExtPath: string;
+  VersionText: PChar;
 begin
   Result := False;
   SimpleBleUnloadLibrary;
   LastLoadError := '';
-  if dllPath <> '' then begin
+
+  if dllPath <> '' then
+  begin
     if not DirectoryExists(dllPath) then
     begin
       LastLoadError := 'Library directory does not exist: ' + dllPath;
-      exit;
+      Exit;
     end;
-    if rightstr(dllPath,1) <> DirectorySeparator then dllPath := dllPath + DirectorySeparator;
-    if not FileExists(dllPath + SimpleBleCoreLibrary) then
+    CorePath := IncludeTrailingPathDelimiter(dllPath) + SimpleBleCoreLibrary;
+    ExtPath := IncludeTrailingPathDelimiter(dllPath) + SimpleBleExtLibrary;
+    if not FileExists(CorePath) then
     begin
-      LastLoadError := 'Native library not found: ' + dllPath + SimpleBleCoreLibrary;
-      exit;
+      LastLoadError := 'Native library not found: ' + CorePath;
+      Exit;
     end;
-    if not FileExists(dllPath + SimpleBleExtLibrary) then
+    if not FileExists(ExtPath) then
     begin
-      LastLoadError := 'Native library not found: ' + dllPath + SimpleBleExtLibrary;
-      exit;
+      LastLoadError := 'Native library not found: ' + ExtPath;
+      Exit;
     end;
-    hCoreLib := LoadLibrary(PChar(dllPath + SimpleBleCoreLibrary));
-    if hCoreLib = 0 then
-    begin
-      LastLoadError := 'Failed to load native library: ' + dllPath + SimpleBleCoreLibrary;
-      exit;
-    end;
-    hLib := LoadLibrary(PChar(dllPath + SimpleBleExtLibrary));
-  end else begin
-    hCoreLib := LoadLibrary(PChar(SimpleBleCoreLibrary));
-    if hCoreLib = 0 then
-    begin
-      LastLoadError := 'Failed to load native library: ' + SimpleBleCoreLibrary;
-      exit;
-    end;
-    hLib := LoadLibrary(PChar(SimpleBleExtLibrary));
+  end
+  else
+  begin
+    CorePath := SimpleBleCoreLibrary;
+    ExtPath := SimpleBleExtLibrary;
   end;
+
+  hCoreLib := LoadLibrary(PChar(CorePath));
+  if hCoreLib = 0 then
+  begin
+    LastLoadError := 'Failed to load native library: ' + CorePath;
+    Exit;
+  end;
+  hLib := LoadLibrary(PChar(ExtPath));
   if hLib = 0 then
   begin
-    LastLoadError := 'Failed to load native library: ' + SimpleBleExtLibrary;
-    UnloadLibrary(hCoreLib);
-    hCoreLib := 0;
-    exit;
+    LastLoadError := 'Failed to load native library: ' + ExtPath;
+    SimpleBleUnloadLibrary;
+    Exit;
   end;
 
   try
-    { functions from SimpleBLE adapter.h }
-    pointer(SimpleBleAdapterIsBluetoothEnabled) := GetProcedureAddress(hLib, 'simpleble_adapter_is_bluetooth_enabled');
-    pointer(SimpleBleAdapterGetCount) := GetProcedureAddress(hLib, 'simpleble_adapter_get_count');
-    pointer(SimpleBleAdapterGetHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_get_handle');
-    pointer(SimpleBleAdapterReleaseHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_release_handle');
-    pointer(SimpleBleAdapterUnderlying) := GetProcedureAddress(hLib, 'simpleble_adapter_underlying');
-    pointer(SimpleBleAdapterIdentifier) := GetProcedureAddress(hLib, 'simpleble_adapter_identifier');
-    pointer(SimpleBleAdapterAddress) := GetProcedureAddress(hLib, 'simpleble_adapter_address');
-    pointer(SimpleBleAdapterPowerOn) := GetProcedureAddress(hLib, 'simpleble_adapter_power_on');
-    pointer(SimpleBleAdapterPowerOff) := GetProcedureAddress(hLib, 'simpleble_adapter_power_off');
-    pointer(SimpleBleAdapterIsPowered) := GetProcedureAddress(hLib, 'simpleble_adapter_is_powered');
-    pointer(SimpleBleAdapterSetCallbackOnPowerOn) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_power_on');
-    pointer(SimpleBleAdapterSetCallbackOnPowerOff) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_power_off');
-    pointer(SimpleBleAdapterScanStart) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_start');
-    pointer(SimpleBleAdapterScanStop) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_stop');
-    pointer(SimpleBleAdapterScanIsActive) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_is_active');
-    pointer(SimpleBleAdapterScanFor) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_for');
-    pointer(SimpleBleAdapterScanGetResultsCount) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_get_results_count');
-    pointer(SimpleBleAdapterScanGetResultsHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_scan_get_results_handle');
-    pointer(SimpleBleAdapterGetPairedPeripheralsCount) := GetProcedureAddress(hLib, 'simpleble_adapter_get_paired_peripherals_count');
-    pointer(SimpleBleAdapterGetPairedPeripheralsHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_get_paired_peripherals_handle');
-    pointer(SimpleBleAdapterGetConnectedPeripheralsCount) := GetProcedureAddress(hLib, 'simpleble_adapter_get_connected_peripherals_count');
-    pointer(SimpleBleAdapterGetConnectedPeripheralsHandle) := GetProcedureAddress(hLib, 'simpleble_adapter_get_connected_peripherals_handle');
-    pointer(SimpleBleAdapterSetCallbackOnScanStart) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_scan_start');
-    pointer(SimpleBleAdapterSetCallbackOnScanStop) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_scan_stop');
-    pointer(SimpleBleAdapterSetCallbackOnScanUpdated) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_scan_updated');
-    pointer(SimpleBleAdapterSetCallbackOnScanFound) := GetProcedureAddress(hLib, 'simpleble_adapter_set_callback_on_scan_found');
-
-    { functions from SimpleBLE peripheral.h }
-    pointer(SimpleBlePeripheralReleaseHandle) := GetProcedureAddress(hLib, 'simpleble_peripheral_release_handle');
-    pointer(SimpleBlePeripheralUnderlying) := GetProcedureAddress(hLib, 'simpleble_peripheral_underlying');
-    pointer(SimpleBlePeripheralIdentifier) := GetProcedureAddress(hLib, 'simpleble_peripheral_identifier');
-    pointer(SimpleBlePeripheralAddress) := GetProcedureAddress(hLib, 'simpleble_peripheral_address');
-    pointer(SimpleBlePeripheralAddressType) := GetProcedureAddress(hLib, 'simpleble_peripheral_address_type');
-    pointer(SimpleBlePeripheralRssi) := GetProcedureAddress(hLib, 'simpleble_peripheral_rssi');
-    pointer(SimpleBlePeripheralTxPower) := GetProcedureAddress(hLib, 'simpleble_peripheral_tx_power');
-    pointer(SimpleBlePeripheralMtu) := GetProcedureAddress(hLib, 'simpleble_peripheral_mtu');
-    pointer(SimpleBlePeripheralConnect) := GetProcedureAddress(hLib, 'simpleble_peripheral_connect');
-    pointer(SimpleBlePeripheralDisconnect) := GetProcedureAddress(hLib, 'simpleble_peripheral_disconnect');
-    pointer(SimpleBlePeripheralIsConnected) := GetProcedureAddress(hLib, 'simpleble_peripheral_is_connected');
-    pointer(SimpleBlePeripheralIsConnectable) := GetProcedureAddress(hLib, 'simpleble_peripheral_is_connectable');
-    pointer(SimpleBlePeripheralIsPaired) := GetProcedureAddress(hLib, 'simpleble_peripheral_is_paired');
-    pointer(SimpleBlePeripheralUnpair) := GetProcedureAddress(hLib, 'simpleble_peripheral_unpair');
-    pointer(SimpleBlePeripheralServicesCount) := GetProcedureAddress(hLib, 'simpleble_peripheral_services_count');
-    pointer(SimpleBlePeripheralServicesGet) := GetProcedureAddress(hLib, 'simpleble_peripheral_services_get');
-    pointer(SimpleBlePeripheralManufacturerDataCount) := GetProcedureAddress(hLib, 'simpleble_peripheral_manufacturer_data_count');
-    pointer(SimpleBlePeripheralManufacturerDataGet) := GetProcedureAddress(hLib, 'simpleble_peripheral_manufacturer_data_get');
-    pointer(SimpleBlePeripheralRead) := GetProcedureAddress(hLib, 'simpleble_peripheral_read');
-    pointer(SimpleBlePeripheralWriteRequest) := GetProcedureAddress(hLib, 'simpleble_peripheral_write_request');
-    pointer(SimpleBlePeripheralWriteCommand) := GetProcedureAddress(hLib, 'simpleble_peripheral_write_command');
-    pointer(SimpleBlePeripheralNotify) := GetProcedureAddress(hLib, 'simpleble_peripheral_notify');
-    pointer(SimpleBlePeripheralIndicate) := GetProcedureAddress(hLib, 'simpleble_peripheral_indicate');
-    pointer(SimpleBlePeripheralUnsubscribe) := GetProcedureAddress(hLib, 'simpleble_peripheral_unsubscribe');
-    pointer(SimpleBlePeripheralReadDescriptor) := GetProcedureAddress(hLib, 'simpleble_peripheral_read_descriptor');
-    pointer(SimpleBlePeripheralWriteDescriptor) := GetProcedureAddress(hLib, 'simpleble_peripheral_write_descriptor');
-    pointer(SimpleBlePeripheralSetCallbackOnConnected) := GetProcedureAddress(hLib, 'simpleble_peripheral_set_callback_on_connected');
-    pointer(SimpleBlePeripheralSetCallbackOnDisconnected) := GetProcedureAddress(hLib, 'simpleble_peripheral_set_callback_on_disconnected');
-
-    { functions from SimpleBLE simpleble.h }
-    pointer(SimpleBleFree) := GetProcedureAddress(hLib, 'simpleble_free');
-
-    { functions from SimpleBLE logging.h }
-    pointer(SimpleBleLoggingSetLevel) := GetProcedureAddress(hLib, 'simpleble_logging_set_level');
-    pointer(SimpleBleLoggingSetCallback) := GetProcedureAddress(hLib, 'simpleble_logging_set_callback');
-    pointer(SimpleBleLoggingGetLevel) := GetProcedureAddress(hLib, 'simpleble_logging_get_level');
-    pointer(SimpleBleLoggingHasCallback) := GetProcedureAddress(hLib, 'simpleble_logging_has_callback');
-    pointer(SimpleBleLoggingLogDefaultStdout) := GetProcedureAddress(hLib, 'simpleble_logging_log_default_stdout');
-    pointer(SimpleBleLoggingLogDefaultFile) := GetProcedureAddress(hLib, 'simpleble_logging_log_default_file');
-    pointer(SimpleBleLoggingLogDefaultFilePath) := GetProcedureAddress(hLib, 'simpleble_logging_log_default_file_path');
-
-    { functions from SimpleBLE config.h }
-    pointer(SimpleBleConfigResetAll) := GetProcedureAddress(hLib, 'simpleble_config_reset_all');
-    pointer(SimpleBleConfigSimpleBluezReset) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_reset');
-    pointer(SimpleBleConfigSimpleBluezGetUseSystemBus) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_get_use_system_bus');
-    pointer(SimpleBleConfigSimpleBluezSetUseSystemBus) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_set_use_system_bus');
-    pointer(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_get_connection_timeout_ms');
-    pointer(SimpleBleConfigSimpleBluezSetConnectionTimeoutMs) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_set_connection_timeout_ms');
-    pointer(SimpleBleConfigSimpleBluezGetDisconnectionTimeoutMs) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_get_disconnection_timeout_ms');
-    pointer(SimpleBleConfigSimpleBluezSetDisconnectionTimeoutMs) := GetProcedureAddress(hLib, 'simpleble_config_simplebluez_set_disconnection_timeout_ms');
-    pointer(SimpleBleConfigWinRtReset) := GetProcedureAddress(hLib, 'simpleble_config_winrt_reset');
-    pointer(SimpleBleConfigWinRtGetExperimentalUseOwnMtaApartment) := GetProcedureAddress(hLib, 'simpleble_config_winrt_get_experimental_use_own_mta_apartment');
-    pointer(SimpleBleConfigWinRtSetExperimentalUseOwnMtaApartment) := GetProcedureAddress(hLib, 'simpleble_config_winrt_set_experimental_use_own_mta_apartment');
-    pointer(SimpleBleConfigWinRtGetExperimentalReinitializeWinRtApartmentOnMainThread) := GetProcedureAddress(hLib, 'simpleble_config_winrt_get_experimental_reinitialize_winrt_apartment_on_main_thread');
-    pointer(SimpleBleConfigWinRtSetExperimentalReinitializeWinRtApartmentOnMainThread) := GetProcedureAddress(hLib, 'simpleble_config_winrt_set_experimental_reinitialize_winrt_apartment_on_main_thread');
-    pointer(SimpleBleConfigWinRtGetUseDeferredDisconnect) := GetProcedureAddress(hLib, 'simpleble_config_winrt_get_use_deferred_disconnect');
-    pointer(SimpleBleConfigWinRtSetUseDeferredDisconnect) := GetProcedureAddress(hLib, 'simpleble_config_winrt_set_use_deferred_disconnect');
-    pointer(SimpleBleConfigCoreBluetoothReset) := GetProcedureAddress(hLib, 'simpleble_config_corebluetooth_reset');
-    pointer(SimpleBleConfigAndroidReset) := GetProcedureAddress(hLib, 'simpleble_config_android_reset');
-    pointer(SimpleBleConfigAndroidGetConnectionPriority) := GetProcedureAddress(hLib, 'simpleble_config_android_get_connection_priority');
-    pointer(SimpleBleConfigAndroidSetConnectionPriority) := GetProcedureAddress(hLib, 'simpleble_config_android_set_connection_priority');
-    pointer(SimpleBleConfigSetAndroidConnectionPriority) := GetProcedureAddress(hLib, 'simpleble_config_set_android_connection_priority');
-    pointer(SimpleBleConfigDonglReset) := GetProcedureAddress(hLib, 'simpleble_config_dongl_reset');
-    pointer(SimpleBleConfigDonglGetUseDonglBackend) := GetProcedureAddress(hLib, 'simpleble_config_dongl_get_use_dongl_backend');
-    pointer(SimpleBleConfigDonglSetUseDonglBackend) := GetProcedureAddress(hLib, 'simpleble_config_dongl_set_use_dongl_backend');
-    pointer(SimpleBleConfigDonglGetAutoUpdate) := GetProcedureAddress(hLib, 'simpleble_config_dongl_get_auto_update');
-    pointer(SimpleBleConfigDonglSetAutoUpdate) := GetProcedureAddress(hLib, 'simpleble_config_dongl_set_auto_update');
-    pointer(SimpleBleConfigDonglGetForceUpdate) := GetProcedureAddress(hLib, 'simpleble_config_dongl_get_force_update');
-    pointer(SimpleBleConfigDonglSetForceUpdate) := GetProcedureAddress(hLib, 'simpleble_config_dongl_set_force_update');
-
-    { functions from SimpleBLE utils.h }
-    pointer(SimpleBleGetOperatingSystem) := GetProcedureAddress(hLib, 'simpleble_get_operating_system');
-	pointer(SimpleBleGetVersion) := GetProcedureAddress(hLib, 'simpleble_get_version');
-	
+    { This is the only C function called before the ABI version gate. }
+    Pointer(SimpleBleGetVersion) :=
+      GetProcedureAddress(hLib, 'simpleble_get_version');
+    if Pointer(SimpleBleGetVersion) = nil then
+      LastLoadError :=
+        'SimpleCBLE 1.2.0 is missing required symbol: simpleble_get_version'
+    else
+    begin
+      VersionText := SimpleBleGetVersion();
+      if VersionText = nil then
+        LastLoadError := 'SimpleCBLE returned a null version string'
+      else if string(VersionText) <> '1.2.0' then
+        LastLoadError := 'Incompatible SimpleCBLE version: ' +
+          string(VersionText) + ' (expected 1.2.0)'
+      else
+        Result := ResolveRequiredSymbols;
+    end;
   except
-    LastLoadError := 'Unexpected error while resolving SimpleCBLE symbols';
-    SimpleBleUnloadLibrary;
-    exit;
+    on E: Exception do
+      LastLoadError := 'Failed to resolve SimpleCBLE symbols: ' + E.Message;
   end;
-
-  if 
-    { functions from SimpleBLE adapter.h }
-    (pointer(SimpleBleAdapterIsBluetoothEnabled) = Nil) or
-    (pointer(SimpleBleAdapterGetCount) = Nil) or
-    (pointer(SimpleBleAdapterGetHandle) = Nil) or
-    (pointer(SimpleBleAdapterReleaseHandle) = Nil) or
-    (pointer(SimpleBleAdapterUnderlying) = Nil) or
-    (pointer(SimpleBleAdapterIdentifier) = Nil) or
-    (pointer(SimpleBleAdapterAddress) = Nil) or
-    (pointer(SimpleBleAdapterPowerOn) = Nil) or
-    (pointer(SimpleBleAdapterPowerOff) = Nil) or
-    (pointer(SimpleBleAdapterIsPowered) = Nil) or
-    (pointer(SimpleBleAdapterSetCallbackOnPowerOn) = Nil) or
-    (pointer(SimpleBleAdapterSetCallbackOnPowerOff) = Nil) or
-    (pointer(SimpleBleAdapterScanStart) = Nil) or
-    (pointer(SimpleBleAdapterScanStop) = Nil) or
-    (pointer(SimpleBleAdapterScanIsActive) = Nil) or
-    (pointer(SimpleBleAdapterScanFor) = Nil) or
-    (pointer(SimpleBleAdapterScanGetResultsCount) = Nil) or
-    (pointer(SimpleBleAdapterScanGetResultsHandle) = Nil) or
-    (pointer(SimpleBleAdapterGetPairedPeripheralsCount) = Nil) or
-    (pointer(SimpleBleAdapterGetPairedPeripheralsHandle) = Nil) or
-    (pointer(SimpleBleAdapterGetConnectedPeripheralsCount) = Nil) or
-    (pointer(SimpleBleAdapterGetConnectedPeripheralsHandle) = Nil) or
-    (pointer(SimpleBleAdapterSetCallbackOnScanStart) = Nil) or
-    (pointer(SimpleBleAdapterSetCallbackOnScanStop) = Nil) or
-    (pointer(SimpleBleAdapterSetCallbackOnScanUpdated) = Nil) or
-    (pointer(SimpleBleAdapterSetCallbackOnScanFound) = Nil) or
-
-    { functions from SimpleBLE peripheral.h }
-    (pointer(SimpleBlePeripheralReleaseHandle) = Nil) or
-    (pointer(SimpleBlePeripheralUnderlying) = Nil) or
-    (pointer(SimpleBlePeripheralIdentifier) = Nil) or
-    (pointer(SimpleBlePeripheralAddress) = Nil) or
-    (pointer(SimpleBlePeripheralAddressType) = Nil) or
-    (pointer(SimpleBlePeripheralRssi) = Nil) or
-    (pointer(SimpleBlePeripheralTxPower) = Nil) or
-    (pointer(SimpleBlePeripheralMtu) = Nil) or
-    (pointer(SimpleBlePeripheralConnect) = Nil) or
-    (pointer(SimpleBlePeripheralDisconnect) = Nil) or
-    (pointer(SimpleBlePeripheralIsConnected) = Nil) or
-    (pointer(SimpleBlePeripheralIsConnectable) = Nil) or
-    (pointer(SimpleBlePeripheralIsPaired) = Nil) or
-    (pointer(SimpleBlePeripheralUnpair) = Nil) or
-    (pointer(SimpleBlePeripheralServicesCount) = Nil) or
-    (pointer(SimpleBlePeripheralServicesGet) = Nil) or
-    (pointer(SimpleBlePeripheralManufacturerDataCount) = Nil) or
-    (pointer(SimpleBlePeripheralManufacturerDataGet) = Nil) or
-    (pointer(SimpleBlePeripheralRead) = Nil) or
-    (pointer(SimpleBlePeripheralWriteRequest) = Nil) or
-    (pointer(SimpleBlePeripheralWriteCommand) = Nil) or
-    (pointer(SimpleBlePeripheralNotify) = Nil) or
-    (pointer(SimpleBlePeripheralIndicate) = Nil) or
-    (pointer(SimpleBlePeripheralUnsubscribe) = Nil) or
-    (pointer(SimpleBlePeripheralReadDescriptor) = Nil) or
-    (pointer(SimpleBlePeripheralWriteDescriptor) = Nil) or
-    (pointer(SimpleBlePeripheralSetCallbackOnConnected) = Nil) or
-    (pointer(SimpleBlePeripheralSetCallbackOnDisconnected) = Nil) or
-
-    { functions from SimpleBLE simpleble.h }
-    (pointer(SimpleBleFree) = Nil) or
-
-    { functions from SimpleBLE logging.h }
-    (pointer(SimpleBleLoggingSetLevel) = Nil) or
-    (pointer(SimpleBleLoggingSetCallback) = Nil) or
-    (pointer(SimpleBleLoggingGetLevel) = Nil) or
-    (pointer(SimpleBleLoggingHasCallback) = Nil) or
-    (pointer(SimpleBleLoggingLogDefaultStdout) = Nil) or
-    (pointer(SimpleBleLoggingLogDefaultFile) = Nil) or
-    (pointer(SimpleBleLoggingLogDefaultFilePath) = Nil) or
-
-    { functions from SimpleBLE config.h }
-    (pointer(SimpleBleConfigResetAll) = Nil) or
-    (pointer(SimpleBleConfigSimpleBluezReset) = Nil) or
-    (pointer(SimpleBleConfigSimpleBluezGetUseSystemBus) = Nil) or
-    (pointer(SimpleBleConfigSimpleBluezSetUseSystemBus) = Nil) or
-    (pointer(SimpleBleConfigSimpleBluezGetConnectionTimeoutMs) = Nil) or
-    (pointer(SimpleBleConfigSimpleBluezSetConnectionTimeoutMs) = Nil) or
-    (pointer(SimpleBleConfigSimpleBluezGetDisconnectionTimeoutMs) = Nil) or
-    (pointer(SimpleBleConfigSimpleBluezSetDisconnectionTimeoutMs) = Nil) or
-    (pointer(SimpleBleConfigWinRtReset) = Nil) or
-    (pointer(SimpleBleConfigWinRtGetExperimentalUseOwnMtaApartment) = Nil) or
-    (pointer(SimpleBleConfigWinRtSetExperimentalUseOwnMtaApartment) = Nil) or
-    (pointer(SimpleBleConfigWinRtGetExperimentalReinitializeWinRtApartmentOnMainThread) = Nil) or
-    (pointer(SimpleBleConfigWinRtSetExperimentalReinitializeWinRtApartmentOnMainThread) = Nil) or
-    (pointer(SimpleBleConfigWinRtGetUseDeferredDisconnect) = Nil) or
-    (pointer(SimpleBleConfigWinRtSetUseDeferredDisconnect) = Nil) or
-    (pointer(SimpleBleConfigCoreBluetoothReset) = Nil) or
-    (pointer(SimpleBleConfigAndroidReset) = Nil) or
-    (pointer(SimpleBleConfigAndroidGetConnectionPriority) = Nil) or
-    (pointer(SimpleBleConfigAndroidSetConnectionPriority) = Nil) or
-    (pointer(SimpleBleConfigSetAndroidConnectionPriority) = Nil) or
-    (pointer(SimpleBleConfigDonglReset) = Nil) or
-    (pointer(SimpleBleConfigDonglGetUseDonglBackend) = Nil) or
-    (pointer(SimpleBleConfigDonglSetUseDonglBackend) = Nil) or
-    (pointer(SimpleBleConfigDonglGetAutoUpdate) = Nil) or
-    (pointer(SimpleBleConfigDonglSetAutoUpdate) = Nil) or
-    (pointer(SimpleBleConfigDonglGetForceUpdate) = Nil) or
-    (pointer(SimpleBleConfigDonglSetForceUpdate) = Nil) or
-
-    { functions from SimpleBLE utils.h }
-    (pointer(SimpleBleGetOperatingSystem) = Nil) or
-	(pointer(SimpleBleGetVersion) = Nil)
-
-  then
-  begin
-    LastLoadError := 'SimpleCBLE 1.1.0 is missing one or more required symbols';
+  if not Result then
     SimpleBleUnloadLibrary;
-    exit;
-  end;
-  result:=true;
 end;
-
 
 function SimpleBleGetLastLoadError(): string;
 begin
