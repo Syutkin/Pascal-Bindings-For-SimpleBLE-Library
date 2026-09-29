@@ -2,12 +2,24 @@
 #include <stdio.h>
 
 #include <simplecble/types.h>
+#include <simplecble/config.h>
+#include <simplecble/logging.h>
 
 int main(void) {
     printf("pointer=%zu\n", sizeof(void*));
     printf("err=%zu\n", sizeof(simpleble_err_t));
     printf("os=%zu\n", sizeof(simpleble_os_t));
     printf("address_type=%zu\n", sizeof(simpleble_address_type_t));
+    printf("bool=%zu\n", sizeof(bool));
+    printf("android_priority=%zu\n", sizeof(simpleble_config_android_connection_priority_t));
+    printf("log_level=%zu\n", sizeof(simpleble_log_level_t));
+    printf("error.first=%d\n", SIMPLEBLE_ERROR_INVALID_ARGUMENT);
+    printf("error.last=%d\n", SIMPLEBLE_ERROR_UNCLASSIFIED_EXCEPTION);
+    printf("local.read=%d\n", SIMPLEBLE_LOCAL_CHARACTERISTIC_READ);
+    printf("local.indicate=%d\n", SIMPLEBLE_LOCAL_CHARACTERISTIC_INDICATE);
+    printf("android_priority.disabled=%d\n", SIMPLEBLE_CONFIG_ANDROID_CONNECTION_PRIORITY_DISABLED);
+    printf("android_priority.dck=%d\n", SIMPLEBLE_CONFIG_ANDROID_CONNECTION_PRIORITY_DCK);
+    printf("log.verbose=%d\n", SIMPLEBLE_LOG_LEVEL_VERBOSE);
     printf("uuid=%zu\n", sizeof(simpleble_uuid_t));
     printf("descriptor=%zu\n", sizeof(simpleble_descriptor_t));
     printf("characteristic=%zu\n", sizeof(simpleble_characteristic_t));

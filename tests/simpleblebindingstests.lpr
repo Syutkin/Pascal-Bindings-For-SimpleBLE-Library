@@ -8,6 +8,7 @@ uses
   {$ENDIF}
   consoletestrunner,
   SimpleCbleAbiTests,
+  SimpleCbleFixtureTests,
   SimpleBleNativeLoaderTests;
 
 var
