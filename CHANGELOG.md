@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Exposed the Pascal bindings version, minimum native SimpleCBLE version,
+  and a loader warning accessor without loading the native libraries.
+
+### Changed
+
+- The native loader accepts SimpleCBLE 1.2.0 and newer versions when required
+  symbols exist. Versions from the next major release produce a warning rather
+  than a version rejection; the warning threshold derives from the minimum
+  supported version.
+
 ## [1.2.0] - 2026-09-29
 
 ### Changed

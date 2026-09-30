@@ -22,12 +22,15 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
+    procedure ExposesVersionsWithoutLoadingLibrary;
     procedure LoadsSimpleCbleVersionOnePointTwo;
     procedure RejectsMissingDirectoryWithDiagnostic;
     procedure RejectsDirectoryWithoutNativeLibraries;
     procedure RejectsDirectoryWithoutSimpleCbleLibrary;
     procedure RejectsLibraryWithMissingRequiredSymbols;
     procedure RejectsSimpleCbleVersionOnePointOne;
+    procedure AcceptsNewerPatchVersionThroughVersionGate;
+    procedure WarnsOnNewMajorVersionAndContinuesSymbolChecks;
     procedure FailedReloadClearsResolvedApi;
     procedure ReloadSucceedsAfterFailure;
     procedure FreeAcceptsNil;
@@ -119,6 +122,17 @@ begin
   inherited TearDown;
 end;
 
+procedure TSimpleBleNativeLoaderTests.ExposesVersionsWithoutLoadingLibrary;
+begin
+  SimpleBleUnloadLibrary;
+  AssertEquals('Pascal bindings version', '1.2.0',
+    SimpleBlePascalVersion);
+  AssertEquals('Minimum native version', '1.2.0',
+    SimpleBleMinimumNativeVersion);
+  AssertFalse('Reading version constants must not load native code',
+    Assigned(SimpleBleGetVersion));
+end;
+
 procedure TSimpleBleNativeLoaderTests.LoadsSimpleCbleVersionOnePointTwo;
 begin
   AssertTrue('SIMPLECBLE_LIBRARY_DIR must point to the native libraries',
@@ -135,8 +149,11 @@ begin
     Assigned(SimpleBleConfigDonglGetUseDonglBackend));
   AssertTrue('SimpleCBLE 1.2 logging API was not resolved',
     Assigned(SimpleBleLoggingGetLevel));
-  AssertEquals('Unexpected SimpleCBLE version', '1.2.0',
+  AssertEquals('Unexpected SimpleCBLE version',
+    SimpleBleMinimumNativeVersion,
     string(SimpleBleGetVersion()));
+  AssertEquals('Supported native version must not warn', '',
+    SimpleBleGetLastLoadWarning());
 end;
 
 procedure TSimpleBleNativeLoaderTests.RejectsMissingDirectoryWithDiagnostic;
@@ -192,7 +209,42 @@ begin
     SimpleBleLoadLibrary(FTemporaryDirectory));
   AssertTrue('Version mismatch must be reported',
     Pos('1.1.0', SimpleBleGetLastLoadError) > 0);
+  AssertTrue('Minimum version must be reported',
+    Pos('(minimum ' + SimpleBleMinimumNativeVersion + ')',
+      SimpleBleGetLastLoadError) > 0);
   AssertApiCleared;
+end;
+
+procedure TSimpleBleNativeLoaderTests.AcceptsNewerPatchVersionThroughVersionGate;
+begin
+  CopyFixtureToTemporaryDirectory(GetEnvironmentVariable(
+    'SIMPLECBLE_PATCH_FIXTURE_LIBRARY'));
+  AssertFalse('Fixture omits required symbols',
+    SimpleBleLoadLibrary(FTemporaryDirectory));
+  AssertTrue('1.2.1 must pass the version gate before symbol checking',
+    Pos('missing required symbol:', SimpleBleGetLastLoadError) > 0);
+  AssertEquals('Patch release must not warn', '',
+    SimpleBleGetLastLoadWarning());
+  AssertApiCleared;
+end;
+
+procedure TSimpleBleNativeLoaderTests.WarnsOnNewMajorVersionAndContinuesSymbolChecks;
+begin
+  CopyFixtureToTemporaryDirectory(GetEnvironmentVariable(
+    'SIMPLECBLE_NEW_MAJOR_FIXTURE_LIBRARY'));
+  AssertFalse('Fixture omits required symbols',
+    SimpleBleLoadLibrary(FTemporaryDirectory));
+  AssertTrue('2.0.0 must pass the version gate before symbol checking',
+    Pos('missing required symbol:', SimpleBleGetLastLoadError) > 0);
+  AssertTrue('Major-version warning must include the native version',
+    Pos('2.0.0', SimpleBleGetLastLoadWarning()) > 0);
+  AssertTrue('Upper warning threshold must be derived from 1.2.0',
+    Pos('..<2.0.0', SimpleBleGetLastLoadWarning()) > 0);
+  AssertApiCleared;
+  AssertTrue('Compatible reload must succeed',
+    SimpleBleLoadLibrary(FLibraryDirectory));
+  AssertEquals('Reload must clear the previous warning', '',
+    SimpleBleGetLastLoadWarning());
 end;
 
 procedure TSimpleBleNativeLoaderTests.FailedReloadClearsResolvedApi;
@@ -221,7 +273,8 @@ begin
   AssertTrue('A compatible reload must succeed after rejection',
     SimpleBleLoadLibrary(FLibraryDirectory));
   AssertTrue(Assigned(SimpleBlePeripheralServicesGet));
-  AssertEquals('1.2.0', string(SimpleBleGetVersion()));
+  AssertEquals(SimpleBleMinimumNativeVersion,
+    string(SimpleBleGetVersion()));
 end;
 
 procedure TSimpleBleNativeLoaderTests.FreeAcceptsNil;

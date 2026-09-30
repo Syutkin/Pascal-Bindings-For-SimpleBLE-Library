@@ -11,12 +11,20 @@ cc -std=c11 -Wall -Wextra -Werror -fPIC -shared -Ishared/include \
 cc -std=c11 -Wall -Wextra -Werror -fPIC -shared -Ishared/include \
   -DSIMPLEBLE_FIXTURE_VERSION='"1.1.0"' \
   tests/simplecblefixture.c -o tests/bin/libsimplecblefixture-1.1.so
+cc -std=c11 -Wall -Wextra -Werror -fPIC -shared -Ishared/include \
+  -DSIMPLEBLE_FIXTURE_VERSION='"1.2.1"' \
+  tests/simplecblefixture.c -o tests/bin/libsimplecblefixture-1.2.1.so
+cc -std=c11 -Wall -Wextra -Werror -fPIC -shared -Ishared/include \
+  -DSIMPLEBLE_FIXTURE_VERSION='"2.0.0"' \
+  tests/simplecblefixture.c -o tests/bin/libsimplecblefixture-2.0.so
 
 tests/bin/simplecbleabioracle
 lazbuild --ws=qt6 tests/simpleblebindingstests.lpi
 SIMPLECBLE_LIBRARY_DIR="$PWD/shared/lib" \
 SIMPLECBLE_FIXTURE_LIBRARY="$PWD/tests/bin/libsimplecblefixture.so" \
 SIMPLECBLE_OLD_FIXTURE_LIBRARY="$PWD/tests/bin/libsimplecblefixture-1.1.so" \
+SIMPLECBLE_PATCH_FIXTURE_LIBRARY="$PWD/tests/bin/libsimplecblefixture-1.2.1.so" \
+SIMPLECBLE_NEW_MAJOR_FIXTURE_LIBRARY="$PWD/tests/bin/libsimplecblefixture-2.0.so" \
   tests/bin/simpleblebindingstests --all --format=plain
 fpc -FuSimpleBleUnit -FEtests/bin -FUtests/lib/linux-x86_64 \
   tests/simplebleownershiptests.lpr

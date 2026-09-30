@@ -33,6 +33,16 @@ uses
   {$ENDIF}
 
 const
+  { Version of these Pascal bindings. Available without loading native code.
+    Example: Log('SimpleBlePascal ' + SimpleBlePascalVersion). }
+  SimpleBlePascalVersion = '1.2.0';
+  { Minimum supported SimpleCBLE version. The loader accepts this version and
+    newer versions when required symbols exist. Starting with the next major
+    version it also reports a warning, since symbol checks cannot prove that
+    native types and function signatures are still ABI-compatible. After a
+    successful load, SimpleBleGetVersion reports the actual native version. }
+  SimpleBleMinimumNativeVersion = '1.2.0';
+
   {$IFDEF WINDOWS}
     SimpleBleExtLibrary = 'simplecble.dll';
     SimpleBleCoreLibrary = 'simpleble.dll';
@@ -182,6 +192,9 @@ procedure SimpleBlePinLibrary();
 function SimpleBleLoadLibrary(dllPath: string = ''): Boolean;
 procedure SimpleBleUnloadLibrary();
 function SimpleBleGetLastLoadError(): string;
+{ Empty for versions below the next major release. A nonempty warning does not
+  make SimpleBleLoadLibrary fail; callers should include it in diagnostics. }
+function SimpleBleGetLastLoadWarning(): string;
 {$ENDIF}
 
 {$IFDEF DYNAMIC_LOADING}
@@ -799,6 +812,7 @@ var
   hCoreLib: TLibHandle = 0;
   hLib: TLibHandle = 0;
   LastLoadError: string = '';
+  LastLoadWarning: string = '';
   LibraryPinned: Boolean = False;
 
 
@@ -1853,15 +1867,58 @@ begin
   Result := True;
 end;
 
+function ParseVersionPart(const AValue: string; out ANumber: Integer): Boolean;
+var
+  Index: Integer;
+begin
+  Result := False;
+  if AValue = '' then
+    Exit;
+  for Index := 1 to Length(AValue) do
+    if not (AValue[Index] in ['0'..'9']) then
+      Exit;
+  Result := TryStrToInt(AValue, ANumber);
+  if Result then
+    Result := ANumber >= 0;
+end;
+
+function ParseNativeVersion(const AValue: string; out AMajor, AMinor,
+  APatch: Integer): Boolean;
+var
+  FirstDot: Integer;
+  SecondDot: Integer;
+  Remaining: string;
+begin
+  Result := False;
+  FirstDot := Pos('.', AValue);
+  if FirstDot = 0 then
+    Exit;
+  Remaining := Copy(AValue, FirstDot + 1, MaxInt);
+  SecondDot := Pos('.', Remaining);
+  if (SecondDot = 0) or (Pos('.', Copy(Remaining, SecondDot + 1,
+    MaxInt)) <> 0) then
+    Exit;
+  Result := ParseVersionPart(Copy(AValue, 1, FirstDot - 1), AMajor) and
+    ParseVersionPart(Copy(Remaining, 1, SecondDot - 1), AMinor) and
+    ParseVersionPart(Copy(Remaining, SecondDot + 1, MaxInt), APatch);
+end;
+
 function SimpleBleLoadLibrary(dllPath: string = ''): Boolean;
 var
   CorePath: string;
   ExtPath: string;
+  MinimumMajor: Integer;
+  MinimumMinor: Integer;
+  MinimumPatch: Integer;
+  NativeMajor: Integer;
+  NativeMinor: Integer;
+  NativePatch: Integer;
   VersionText: PChar;
 begin
   Result := False;
   SimpleBleUnloadLibrary;
   LastLoadError := '';
+  LastLoadWarning := '';
 
   if dllPath <> '' then
   begin
@@ -1909,17 +1966,42 @@ begin
       GetProcedureAddress(hLib, 'simpleble_get_version');
     if Pointer(SimpleBleGetVersion) = nil then
       LastLoadError :=
-        'SimpleCBLE 1.2.0 is missing required symbol: simpleble_get_version'
+        'SimpleCBLE ' + SimpleBleMinimumNativeVersion +
+        ' is missing required symbol: simpleble_get_version'
     else
     begin
       VersionText := SimpleBleGetVersion();
       if VersionText = nil then
         LastLoadError := 'SimpleCBLE returned a null version string'
-      else if string(VersionText) <> '1.2.0' then
-        LastLoadError := 'Incompatible SimpleCBLE version: ' +
-          string(VersionText) + ' (expected 1.2.0)'
       else
-        Result := ResolveRequiredSymbols;
+      begin
+        if not ParseNativeVersion(SimpleBleMinimumNativeVersion,
+          MinimumMajor, MinimumMinor, MinimumPatch) then
+          LastLoadError := 'Invalid minimum SimpleCBLE version: ' +
+            SimpleBleMinimumNativeVersion
+        else if not ParseNativeVersion(string(VersionText), NativeMajor,
+          NativeMinor, NativePatch) then
+          LastLoadError := 'Invalid SimpleCBLE version: ' +
+            string(VersionText)
+        else if (NativeMajor < MinimumMajor) or
+          ((NativeMajor = MinimumMajor) and
+          ((NativeMinor < MinimumMinor) or
+          ((NativeMinor = MinimumMinor) and
+          (NativePatch < MinimumPatch)))) then
+          LastLoadError := 'Unsupported SimpleCBLE version: ' +
+            string(VersionText) + ' (minimum ' +
+            SimpleBleMinimumNativeVersion + ')'
+        else
+        begin
+          if NativeMajor > MinimumMajor then
+            LastLoadWarning := 'SimpleCBLE version ' +
+              string(VersionText) + ' is newer than the tested major range ' +
+              SimpleBleMinimumNativeVersion + '..<' +
+              IntToStr(MinimumMajor + 1) + '.0.0; ABI compatibility is not ' +
+              'guaranteed';
+          Result := ResolveRequiredSymbols;
+        end;
+      end;
     end;
   except
     on E: Exception do
@@ -1932,6 +2014,11 @@ end;
 function SimpleBleGetLastLoadError(): string;
 begin
   Result := LastLoadError;
+end;
+
+function SimpleBleGetLastLoadWarning(): string;
+begin
+  Result := LastLoadWarning;
 end;
 
 
